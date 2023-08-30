@@ -8,14 +8,14 @@ class Spark {
 
     render() {
         push();
+        console.log('RENDER: ' + this.pos.x + ' ' + this.dV.x);
         image(this.image, this.pos.x, this.pos.y, this.sizeVec.x, this.sizeVec.y);
         pop();
     }
 
     update() {
-       this.pos.x -= this.dV.x;
-       this.pos.y -= this.dV.y;
-       this.sizeVec.x += 2;
-       this.sizeVec.y += 2;
+        console.log('UPDATE: ' + this.pos.x + ' ' + this.dV.x);
+       this.pos.x =  this.pos.x + this.dV.x;
+       this.pos.y += this.dV.y;
     }
 }

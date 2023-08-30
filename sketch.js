@@ -5,6 +5,8 @@ const vW = window.innerWidth;
 //GAMEMANGER STUFF
 let shot = false;
 let plantSparks = false;
+var sprak1;
+var spark2;
 
 //GUN STUFF
 let shooter;
@@ -65,10 +67,18 @@ function draw() {
 
   if(plantSparks) {
     shot = false;
-    sparks.forEach(o => {
-      o.update();
-      o.render();
-    });
+
+    if(spark1 != undefined && spark2 != undefined) {
+      spark1.update(); 
+      spark1.render();
+  
+      spark2.update(); 
+      spark2.render();
+    }
+  /*  for(var i = 0; i < 8; i++) {
+      sparks[i].update(); 
+      sparks[i].render();
+    }*/
   }
 
 
@@ -90,9 +100,8 @@ function keyPressed() {
     laser = new Beam(laserImg,pX);
     shot = true;
   }
-  if (key === 'f') {
+  if (key === 'f' && !plantSparks) {
     plantSparks = true;
-    var i = 1;
     var vecs = [
       createVector(1,1),
       createVector(-1,1),
@@ -103,14 +112,31 @@ function keyPressed() {
       createVector(0,-1),
       createVector(-1,0),
     ]
-    while(i <= 8) {
-      var veloVec = vecs[i-1];
-      console.log(veloVec);
-      var sizeVec = createVector(10, 10);
-      var someVec = laser.pos;
-      var spark = new Spark(sparkImg, someVec, veloVec, sizeVec);
-      sparks.push(spark);
-      i++;
-    }
+    
+    var sizeVec = createVector(10, 10);
+    var someVec = laser.pos;
+    spark1 = new Spark(sparkImg, someVec, vecs[0] , sizeVec);
+    spark2 = new Spark(sparkImg, someVec, vecs[1] , sizeVec);
+  }
+}
+
+function createSparks() {
+  var i = 1;
+  var vecs = [
+    createVector(1,1),
+    createVector(-1,1),
+    createVector(1,-1),
+    createVector(-1,-1),
+    createVector(1,0),
+    createVector(0,1),
+    createVector(0,-1),
+    createVector(-1,0),
+  ]
+  while(i <= 8) {
+    var veloVec = vecs[i-1];
+    var sizeVec = createVector(10, 10);
+    var someVec = laser.pos;
+    sparks.push(new Spark(sparkImg, someVec, veloVec, sizeVec));
+    i++;
   }
 }
