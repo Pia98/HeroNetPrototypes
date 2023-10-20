@@ -10,7 +10,7 @@ let shooter;
 const sH = 80;
 const sW = 100;
 let pX = vW/2 - sW/2;
-const gunSpeed = 2;
+const gunSpeed = 5;
 
 //ENEMIEES
 const amount = 10;
@@ -19,6 +19,8 @@ let ads;
 //LASER
 let laser;
 let pos;
+
+var oldMousePosX;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -36,6 +38,7 @@ function setup() {
   //Draw those enemies
   ads = new PopupAd(ad1Img, vW/2 - 75, 0, 150, 348);
 
+  oldMousePosX = mouseX;
 }
 
 // ----------- DRAW called every ms? --------------
@@ -74,9 +77,20 @@ function draw() {
   }
 }
 
-function keyPressed() {
-  if (key === ' ' && !shot) {
+function mousePressed() {
+  if (!shot) {
     laser = new Beam(laserImg,pX);
     shot = true;
   }
+}
+
+function mouseDragged() {
+  if(oldMousePosX < mouseX && pX < (vW - sW)) {
+    console.log("dragright: " + oldMousePosX + " " + mouseX);
+    pX += gunSpeed;
+  } else if(oldMousePosX > mouseX && pX > 0) {
+    console.log("dragright: " + oldMousePosX + " " + mouseX);
+    pX -= gunSpeed;
+  }
+  oldMousePosX = mouseX
 }
