@@ -36,7 +36,7 @@ function setup() {
   createCanvas(vW, vH);
 
   //Draw those enemies
-  ads = new PopupAd(ad1Img, vW/2 - 75, 0, 150, 348);
+  ads = new PopupAd(ad1Img, vW/2 - 75, 0, 75, 192, true, 3, 1);
 
   oldMousePosX = mouseX;
 }
@@ -77,20 +77,27 @@ function draw() {
   }
 }
 
+// ----------- Move the Laser Controls --------------
 function mousePressed() {
-  if (!shot) {
-    laser = new Beam(laserImg,pX);
-    shot = true;
-  }
+  //press inside Laser:
+    if(mouseX <= (pX + sW/2 + 10) && mouseX >= (pX - sW/2 - 10) && mouseY <= vH && mouseY >= (vH - sH - 10) ) {
+      if (!shot) {
+        laser = new Beam(laserImg,pX);
+        shot = true;
+      }
+    }
 }
 
 function mouseDragged() {
-  if(oldMousePosX < mouseX && pX < (vW - sW)) {
-    console.log("dragright: " + oldMousePosX + " " + mouseX);
-    pX += gunSpeed;
-  } else if(oldMousePosX > mouseX && pX > 0) {
-    console.log("dragright: " + oldMousePosX + " " + mouseX);
-    pX -= gunSpeed;
+  //press inside Laser:
+  if(mouseY <= vH && mouseY >= (vH - sH - 15) ) {
+    if(oldMousePosX < mouseX && pX < (vW - sW)) {
+      //console.log("dragright: " + oldMousePosX + " " + mouseX);
+      pX += gunSpeed;
+    } else if(oldMousePosX > mouseX && pX > 0) {
+      //console.log("dragright: " + oldMousePosX + " " + mouseX);
+      pX -= gunSpeed;
+    }
+    oldMousePosX = mouseX
   }
-  oldMousePosX = mouseX
 }
