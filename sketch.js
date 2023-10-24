@@ -14,7 +14,7 @@ const gunSpeed = 5;
 
 //ENEMIEES
 const amount = 10;
-let ads;
+let allAds = [];
 
 //LASER
 let laser;
@@ -28,6 +28,12 @@ function preload() {
   laserImg = loadImage('assets/img/beam.png');
   ad1Img = loadImage('assets/img/ad1.png');
   ad2Img = loadImage('assets/img/ad2.png');
+  ad3Img = loadImage('assets/img/ad3.png');
+  ad4Img = loadImage('assets/img/ad4.png');
+  ad5Img = loadImage('assets/img/ad5.png');
+  ad6Img = loadImage('assets/img/ad6.png');
+  ad7Img = loadImage('assets/img/ad7.png');
+  ad8Img = loadImage('assets/img/ad8.png');
 }
 
 // ----------- SETUP --------------
@@ -36,7 +42,25 @@ function setup() {
   createCanvas(vW, vH);
 
   //Draw those enemies
-  ads = new PopupAd(ad1Img, vW/2 - 75, 0, 75, 192, true, 3, 1);
+  //always push the moving ads last
+  ad2 = new PopupAd(ad2Img, vW/2 + 50, 30, 100, 50, false, 3, 1, 10);
+  allAds.push(ad2);
+  ad3 = new PopupAd(ad3Img, vW/2 - 100, 100, 100, 50, false, 3, 1, 13);
+  allAds.push(ad3);
+  ad4 = new PopupAd(ad4Img, vW/2, 130, 100, 125, false, 3, 1, 12);
+  allAds.push(ad4);
+  ad6 = new PopupAd(ad5Img, vW/2 - 150, 150, 100, 125, false, 3, 1, 12);
+  allAds.push(ad6);
+  ad7 = new PopupAd(ad6Img, vW/2 + 100, 130, 100, 30, false, 3, 1, 12);
+  allAds.push(ad7);
+  ad8 = new PopupAd(ad4Img, vW/2 - 200, 50, 80, 100, false, 3, 1, 12);
+  allAds.push(ad8);
+  ad9 = new PopupAd(ad8Img, vW - 50, 75, 50, 50, true, 3, 0, 12);
+  allAds.push(ad9);
+  ad = new PopupAd(ad1Img, vW/2 - 75, 0, 75, 192, true, 3, 1, 5);
+  allAds.push(ad);
+  ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 52, 134, true, 1, 3, 5);
+  allAds.push(ad5);
 
   oldMousePosX = mouseX;
 }
@@ -50,12 +74,17 @@ function draw() {
   if(shot) {
     laser.update();
     laser.render();
-    collided = laser.colliding(ads);
-    if(collided) {
-      laser.reset();
-      shot = false;
-      ads.dead = true;
-    }
+    allAds.forEach((a, index) => {
+      collided = laser.colliding(a);
+      if(collided) {
+        laser.reset();
+        shot = false;
+        a.hit();
+        if(a.dead) {
+          delete allAds[index];
+        }
+      }
+    })
 
     if(laser.pos.y < -200) {
       laser.reset();
@@ -71,10 +100,10 @@ function draw() {
     pX += gunSpeed;
   }
   image(gunImg, pX, (vH - sH + 3), sW, sH);
-
-  if(ads != null) {
-    ads.render();
-  }
+  allAds.forEach((a) => {
+  if(a != null) {
+    a.render();
+  }})
 }
 
 // ----------- Move the Laser Controls --------------
