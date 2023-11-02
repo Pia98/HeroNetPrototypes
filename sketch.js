@@ -44,23 +44,23 @@ function setup() {
 
   //Draw those enemies
   //always push the moving ads last
-  ad2 = new PopupAd(ad2Img, vW/2 + 50, 30, 200, 100, false, 3, 1, 10);
+  ad2 = new PopupAd(ad2Img, vW/2 + 50, 30, 200, 100,  0.2, 0, 10);
   allAds.push(ad2);
-  ad3 = new PopupAd(ad3Img, vW/2 - 100, 100, 200, 100, false, 3, 1, 13);
+  ad3 = new PopupAd(ad3Img, vW/2 - 100, 100, 200, 100,  0.5, 0.3, 13);
   allAds.push(ad3);
-  ad4 = new PopupAd(ad4Img, vW/2, 130, 150, 187, false, 3, 1, 12);
+  ad4 = new PopupAd(ad4Img, vW/2, 130, 150, 187,  0.2, 0, 12);
   allAds.push(ad4);
-  ad6 = new PopupAd(ad5Img, vW/2 - 150, 100, 150, 187, false, 3, 1, 12);
+  ad6 = new PopupAd(ad5Img, vW/2 - 150, 100, 150, 187, 0.3, 0.3, 12);
   allAds.push(ad6);
-  ad7 = new PopupAd(ad6Img, vW/2 + 50, 130, 150, 45, false, 3, 1, 12);
+  ad7 = new PopupAd(ad6Img, vW/2 + 50, 130, 150, 45, 0, 0.6, 12);
   allAds.push(ad7);
-  ad8 = new PopupAd(ad4Img, vW/2 - 200, 50, 120, 150, false, 3, 1, 12);
+  ad8 = new PopupAd(ad4Img, vW/2 - 200, 50, 120, 150, 2, 1, 12);
   allAds.push(ad8);
-  ad9 = new PopupAd(ad8Img, vW - 50, 75, 75, 75, true, 3, 0, 12);
+  ad9 = new PopupAd(ad8Img, vW - 50, 75, 75, 75, 3, 0, 12);
   allAds.push(ad9);
-  ad = new PopupAd(ad1Img, vW/2 - 75, 0, 112, 288, true, 3, 1, 5);
+  ad = new PopupAd(ad1Img, vW/2 - 75, 0, 112, 288, 3, 1, 5);
   allAds.push(ad);
-  ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 78, 201, true, 1, 3, 5);
+  ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 78, 201, 1, 3, 5);
   allAds.push(ad5);
 
   oldMousePosX = mouseX;
