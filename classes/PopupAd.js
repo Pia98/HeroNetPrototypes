@@ -105,7 +105,7 @@ class PopupAd {
     if ( this.pos.x <= 0) {
       this.moveRight = true;
     }
-    if(this.pos.y >= 150) {
+    if(this.pos.y >= 300) {
       this.moveUp = true;
     }
     if (this.pos.y <= -5) {

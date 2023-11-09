@@ -8,11 +8,13 @@ class Beam {
         this.h = 200;
         this.r = 3;
         this.image = img
+
     }
 
     render() {
         push();
         image(this.image, this.pos.x, this.pos.y, this.w, this.h);
+
         pop();
     }
 
