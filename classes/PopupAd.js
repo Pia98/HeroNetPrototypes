@@ -33,27 +33,7 @@ class PopupAd {
 
       translate(this.pos.x, this.pos.y);
       if(this.hitAnimation) {
-        this.moving = false;
-        if (this.animTimer > 0 ) {
-          
-          if(this.jitterLeft) {
-            this.jitter -= 1.5;
-          } else this.jitter += 1.5;
-
-          if(this.jitter < -4) {
-            this.jitterLeft = false;
-          }
-          if(this.jitter > 4) {
-            this.jitterLeft = true;
-          }
-
-          image(this.image, 0 + this.jitter, 0, this.width, this.height);
-          this.animTimer --;
-        } else {
-          this.hitAnimation = false;
-          this.animTimer = 50;
-          this.moving = true;
-        }
+        this.renderHitAnim();
         
       } else image(this.image, 0, 0, this.width, this.height);
 
@@ -69,6 +49,19 @@ class PopupAd {
     this.hbText = Math.round(this.health/this.initialHealth * 100) + '%';
     
     this.hitAnimation = true;
+
+    if(this.health <= 0) {
+      this.dead = true;
+    }
+  }
+
+  botHit() {
+    this.health--;
+    this.hbWidthInner = this.hbWidthInner - this.hbWidthInner / this.initialHealth;
+    
+    this.hbText = Math.round(this.health/this.initialHealth * 100) + '%';
+    
+    //this.hitAnimation = true;
 
     if(this.health <= 0) {
       this.dead = true;
@@ -111,6 +104,30 @@ class PopupAd {
     if (this.pos.y <= -5) {
       this.moveUp = false;
     }
+  }
+
+  renderHitAnim(){
+    this.moving = false;
+        if (this.animTimer > 0 ) {
+          
+          if(this.jitterLeft) {
+            this.jitter -= 1.5;
+          } else this.jitter += 1.5;
+
+          if(this.jitter < -4) {
+            this.jitterLeft = false;
+          }
+          if(this.jitter > 4) {
+            this.jitterLeft = true;
+          }
+
+          image(this.image, 0 + this.jitter, 0, this.width, this.height);
+          this.animTimer --;
+        } else {
+          this.hitAnimation = false;
+          this.animTimer = 50;
+          this.moving = true;
+        }
   }
 
 }

@@ -43,11 +43,15 @@ class Gun {
 
          //move the gun
          // can be deleted later just for debug purpose
-        if (keyIsDown(LEFT_ARROW) && this.pos.x > 0) {
-            this.pos.x -= this.speed;
-        } else if (keyIsDown(RIGHT_ARROW) && this.pos.x < (vW - this.w)) {
-            this.pos.x += this.speed;
+
+        if(DEBUG) {
+            if (keyIsDown(LEFT_ARROW) && this.pos.x > 0) {
+                this.pos.x -= this.speed;
+            } else if (keyIsDown(RIGHT_ARROW) && this.pos.x < (vW - this.w)) {
+                this.pos.x += this.speed;
+            }
         }
+        
         
         if(this.cooldown > 0) {
             this.cooldown--;
