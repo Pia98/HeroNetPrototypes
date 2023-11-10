@@ -1,11 +1,11 @@
 class PopupAd {
 
-  constructor(img, x, y, w, h, moving, speedX, speedY, health) {
+  constructor(img, x, y, w, h, speedX, speedY, health) {
     this.image = img;
     this.pos = createVector(x, y);
     this.width = w;
     this.height = h;
-    this.moving = moving;
+    this.moving = true;
     this.dead = false;
     this.moveRight = false;
     this.moveUp = false;
@@ -19,6 +19,9 @@ class PopupAd {
     this.hbText = 100 + '%';
 
     this.hitAnimation = false;
+    this.animTimer = 50;
+    this.jitter = 0;
+    this.jitterLeft = false;
   }
 
   render() {
@@ -28,7 +31,11 @@ class PopupAd {
         this.renderMovement()
       }
 
-      image(this.image, this.pos.x, this.pos.y, this.width, this.height);
+      translate(this.pos.x, this.pos.y);
+      if(this.hitAnimation) {
+        this.renderHitAnim();
+        
+      } else image(this.image, 0, 0, this.width, this.height);
 
       this.renderHealthBar()
     }
@@ -48,15 +55,28 @@ class PopupAd {
     }
   }
 
+  botHit() {
+    this.health--;
+    this.hbWidthInner = this.hbWidthInner - this.hbWidthInner / this.initialHealth;
+    
+    this.hbText = Math.round(this.health/this.initialHealth * 100) + '%';
+    
+    //this.hitAnimation = true;
+
+    if(this.health <= 0) {
+      this.dead = true;
+    }
+  }
+
   renderHealthBar() {
     //health bar
     noStroke();
     fill('#606063');
-    rect(this.pos.x, this.pos.y + this.height/1.5, this.hbWidth, 7);
+    rect(0, 0 + this.height/1.5, this.hbWidth, 7);
     fill('#80F2F2');
-    rect(this.pos.x + 1, this.pos.y + this.height/1.5 + 1, this.hbWidthInner, 5);
+    rect(0 + 1, 0 + this.height/1.5 + 1, this.hbWidthInner, 5);
     textSize(10);
-    text(this.hbText, this.pos.x + this.hbWidth + 5, this.pos.y + this.height/1.5 + 6);
+    text(this.hbText, 0 + this.hbWidth + 5, 0 + this.height/1.5 + 6);
   }
 
   renderMovement() {
@@ -78,11 +98,36 @@ class PopupAd {
     if ( this.pos.x <= 0) {
       this.moveRight = true;
     }
-    if(this.pos.y >= 150) {
+    if(this.pos.y >= 300) {
       this.moveUp = true;
     }
     if (this.pos.y <= -5) {
       this.moveUp = false;
     }
   }
+
+  renderHitAnim(){
+    this.moving = false;
+        if (this.animTimer > 0 ) {
+          
+          if(this.jitterLeft) {
+            this.jitter -= 1.5;
+          } else this.jitter += 1.5;
+
+          if(this.jitter < -4) {
+            this.jitterLeft = false;
+          }
+          if(this.jitter > 4) {
+            this.jitterLeft = true;
+          }
+
+          image(this.image, 0 + this.jitter, 0, this.width, this.height);
+          this.animTimer --;
+        } else {
+          this.hitAnimation = false;
+          this.animTimer = 50;
+          this.moving = true;
+        }
+  }
+
 }
