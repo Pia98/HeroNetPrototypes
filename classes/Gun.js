@@ -24,13 +24,16 @@ class Gun {
            b.update();
            b.render();
            allAds.forEach((a, index) => {
-            var collided = b.colliding(a);
+            var collided = false;
+            if(a.dead) { collided = false;}
+            else collided = b.colliding(a);
             if(collided) {
                 delete this.laserBeams[ind];
                 
                 a.hit();
                 if(a.dead) {
-                    delete allAds[index];
+                    //delete allAds[index];
+                    
                 }
             }
             })

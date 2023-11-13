@@ -21,12 +21,13 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let TIMER = 10800;
+let defaultTime = 7200;
+let TIMER;
 var fakeViewers;
-var botAmount = 10;
-var cooldownTimeBots = 60;
+var botAmount = 1;
+var cooldownTimeBots = 20;
 var adHealth = 20;
-var amountAds = 9;
+var amountAds = 34;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -48,30 +49,43 @@ function setup() {
   //first define our playground area -> took the whole space which is available
   createCanvas(vW, vH);
   frameRate(60);
+  TIMER = defaultTime;
 
   //+1 bc of user
-  adHealth = ((TIMER / cooldownTimeBots) * (botAmount + 1)) / amountAds;
+  adHealth = 100;//Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount*2)) / (amountAds*19));
 
   //Draw those enemies
   //always push the moving ads last
-  ad2 = new PopupAd(ad2Img, vW/2 + 50, 30, 100, 50, 0.2, 0, adHealth);
-  allAds.push(ad2);
-  ad3 = new PopupAd(ad3Img, vW/2 - 100, 100, 100, 50,  0.5, 0, adHealth);
-  allAds.push(ad3);
-  ad4 = new PopupAd(ad4Img, vW/2, 130, 75, 93, 0.2, 0, adHealth);
-  allAds.push(ad4);
-  ad6 = new PopupAd(ad5Img, vW/2 - 150, 170, 75, 93, 0.4, 0, adHealth);
-  allAds.push(ad6);
-  ad7 = new PopupAd(ad6Img, vW/2 + 50, 130, 75, 23, 0, 0.6, adHealth);
-  allAds.push(ad7);
-  ad8 = new PopupAd(ad4Img, vW/2 - 200, 50, 60, 75, 2, 1, adHealth);
-  allAds.push(ad8);
-  ad9 = new PopupAd(ad8Img, vW - 50, 75, 37, 37, 3, 0, adHealth);
-  allAds.push(ad9);
-  ad = new PopupAd(ad1Img, vW/2 - 75, 0, 56, 144, 3, 1, adHealth);
-  allAds.push(ad);
-  ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 39, 100, 1, 3, adHealth);
-  allAds.push(ad5);
+
+  var adImgs = [];
+  adImgs.push(ad1Img);
+  adImgs.push(ad2Img);
+  adImgs.push(ad3Img);
+  adImgs.push(ad4Img);
+  adImgs.push(ad5Img);
+  adImgs.push(ad6Img);
+  adImgs.push(ad7Img);
+  adImgs.push(ad8Img);
+
+  for(var i = 0; i <= amountAds; i++) {
+    var index = Math.floor(Math.random() * (adImgs.length -1));
+    
+    var tmpImg = adImgs[index];
+    var ad = new PopupAd(tmpImg,
+      vW/2 + ((Math.random() * 190) - (Math.random() * 190)),
+      (Math.random() * 200) + 50,
+      tmpImg.width / 6,
+      tmpImg.height / 6,
+      Math.floor((Math.random() * 10)),
+      Math.floor((Math.random() * 10)),
+      Math.floor((Math.random() * 10)) <= 5,
+      adHealth,
+      defaultTime - i*200);
+    
+    console.log(ad.activationTime + " " +  ad.moving);
+    allAds.push(ad);
+  }
+
 
   oldMousePosX = mouseX;
 
@@ -82,6 +96,8 @@ function setup() {
 
 // ----------- DRAW called every ms? --------------
 function draw() {
+  clear();
+
   //3min
   TIMER--;
 
@@ -90,14 +106,19 @@ function draw() {
     stopGame();
     
   }
-  clear();
+
+  if(TIMER == Math.floor(defaultTime*0.7)) {
+    ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 39, 100, 1, 3, adHealth);
+    allAds.push(ad5);
+  }
+  
 
   //karte
   mapImg.resize(vW + 240, 0);
   image(mapImg, 0 - 120, 20);
   
   allAds.forEach((a) => {
-    if(a != null) {
+    if(a != null && a.activationTime >= TIMER) {
       a.render();
   }})
 
@@ -107,11 +128,11 @@ function draw() {
   if(DEBUG) {
     fill('white');
     textSize(10);
-    text((Math.round(TIMER / 60)).toString() + "s", 10, 10);
-    text("BOT AMOUNT: " + (botAmount).toString(), 10, 20);
-    text("BOT cooldown: " + (cooldownTimeBots).toString(), 10, 30);
-    text("AD amount: " + (amountAds).toString(), 10, 50);
-    text("AD health: " + (adHealth).toString(), 10, 40);
+    text((Math.round(TIMER)).toString() + "s", 10, this.innerHeight - 60);
+    text("BOT AMOUNT: " + (botAmount).toString(), 10, this.innerHeight - 50);
+    text("BOT cooldown: " + (cooldownTimeBots).toString(), 10, this.innerHeight - 40);
+    text("AD amount: " + (amountAds).toString(), 10, this.innerHeight - 30);
+    text("AD health: " + (adHealth).toString(), 10, this.innerHeight - 20);
   }
   
 }
