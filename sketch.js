@@ -24,10 +24,10 @@ var oldMousePosX;
 let defaultTime = 7200;
 let TIMER;
 var fakeViewers;
-var botAmount = 1;
-var cooldownTimeBots = 20;
-var adHealth = 20;
-var amountAds = 34;
+var botAmount = 100;
+var cooldownTimeBots = 120;
+var maxHealth = 20;
+var amountAds = 20;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -52,7 +52,7 @@ function setup() {
   TIMER = defaultTime;
 
   //+1 bc of user
-  adHealth = 100;//Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount*2)) / (amountAds*19));
+  maxHealth = Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount/3)) / (amountAds));
 
   //Draw those enemies
   //always push the moving ads last
@@ -76,11 +76,8 @@ function setup() {
       (Math.random() * 200) + 50,
       tmpImg.width / 6,
       tmpImg.height / 6,
-      Math.floor((Math.random() * 10)),
-      Math.floor((Math.random() * 10)),
-      Math.floor((Math.random() * 10)) <= 5,
-      adHealth,
-      defaultTime - i*200);
+      Math.floor(Math.random() * (maxHealth - 200)) + 100,
+      defaultTime - i*60 + 500);
     
     console.log(ad.activationTime + " " +  ad.moving);
     allAds.push(ad);
@@ -107,11 +104,6 @@ function draw() {
     
   }
 
-  if(TIMER == Math.floor(defaultTime*0.7)) {
-    ad5 = new PopupAd(ad1Img, vW/2 - 75, 50, 39, 100, 1, 3, adHealth);
-    allAds.push(ad5);
-  }
-  
 
   //karte
   mapImg.resize(vW + 240, 0);
@@ -128,11 +120,11 @@ function draw() {
   if(DEBUG) {
     fill('white');
     textSize(10);
-    text((Math.round(TIMER)).toString() + "s", 10, this.innerHeight - 60);
+    text((Math.round(TIMER / 60)).toString() + "s", 10, this.innerHeight - 60);
     text("BOT AMOUNT: " + (botAmount).toString(), 10, this.innerHeight - 50);
     text("BOT cooldown: " + (cooldownTimeBots).toString(), 10, this.innerHeight - 40);
     text("AD amount: " + (amountAds).toString(), 10, this.innerHeight - 30);
-    text("AD health: " + (adHealth).toString(), 10, this.innerHeight - 20);
+    text("max. AD health: " + (maxHealth).toString(), 10, this.innerHeight - 20);
   }
   
 }
