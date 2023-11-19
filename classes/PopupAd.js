@@ -17,7 +17,7 @@ class PopupAd {
     this.moving = this.movingDefault;
 
     this.isGrowing = false;
-    if(!this.moving) this.isGrowing = Math.floor((Math.random() * 10)) <= 3;
+    //if(!this.moving) this.isGrowing = Math.floor((Math.random() * 10)) <= 3;
     
     if(this.isGrowing) {
       this.width = w *0.75;

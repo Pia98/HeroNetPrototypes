@@ -24,7 +24,7 @@ var oldMousePosX;
 let defaultTime = 7200;
 let TIMER;
 var fakeViewers;
-var botAmount = 100;
+var botAmount = 10000;
 var cooldownTimeBots = 120;
 var maxHealth = 20;
 var amountAds = 20;
