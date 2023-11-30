@@ -75,6 +75,15 @@ function draw() {
     stopGame();
   }
 
+  if(DEBUG) {
+    fill('white');
+    textSize(10);
+    textFont('Helvetica');
+    // text(mouseY, 10,window.innerHeight - 60);
+
+    // text(Math.floor(vH /2), 10,window.innerHeight - 80);
+  }
+
   // Auswahlbox
   fill("#01011E");
   stroke("#80F2F2");
@@ -85,10 +94,6 @@ function draw() {
   
   loadSelectionScreen();
   
-
-  if(DEBUG) {
-   
-  }
   
 }
 
@@ -96,11 +101,12 @@ function draw() {
 
 function loadSelectionScreen() {
   strokeWeight(0);
+  fill("white");
+  textFont('Helvetica');
+  textSize(25);
 
   if(step == 1) {
     //show shapes
-    textSize(25);
-    fill("white");
     text("Wähle eine Form", 180, 30);
 
     textSize(18);
@@ -114,8 +120,6 @@ function loadSelectionScreen() {
   }
   if(step == 2) {
     //show shapes
-    textSize(25);
-    fill("white");
     text("Wähle eine Farbe", 180, 30);
 
     textSize(18);
@@ -128,8 +132,22 @@ function loadSelectionScreen() {
     customSticker.strokeColor = colorPalette[strokeColorSlider.value() - 1];
   }
 
+  if(step == 3) {
+    text("Wähle einen Schriftzug", 110, 30);
+    //show shapes
+    textSize(40);
+    textFont('dimensions');
+    text("NOPE!", 25, 100);
+    text("YEAH!", 25, 170);
+    text("NO SIGNAL", 25, 240);
+    text("LOL", 225, 100);
+    text("CLICK ME", 225, 170);
+    text("I WAS HERE", 225, 240);
+  }
+
   customSticker.render();
 
+  textFont('dimensions');
   fill("#80F2F2");
   polygon(vW - 70, vH/2 - 60, 20, 3);
   textSize(18);
@@ -170,8 +188,52 @@ function mouseClicked() {
       step = 1;
     }
     console.log("STEP:" + step);
-
   }
+
+
+if(step == 3) {
+  /**
+   *  text("NOPE!", 25, 100);
+    text("YEAH!", 25, 170);
+    text("NO SIGNAL", 25, 240);
+    text("LOL", 225, 100);
+    text("CLICK ME", 225, 170);
+    text("I WAS HERE", 225, 240);
+   */
+
+   if(mouseX >= 55 && mouseX <= 230) {
+     //column 1
+     if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
+      //row = 1;
+      customSticker.text = "NOPE!";
+    }
+    if(mouseY >= Math.floor(vH /2) + 120 && mouseY <= Math.floor(vH /2) + 190) {
+      //row = 2;
+      customSticker.text = "YEAH!";
+    }
+    if(mouseY >= Math.floor(vH /2) + 190 && mouseY <= Math.floor(vH /2) + 260) {
+      //row = 3;
+      customSticker.text = "NO SIGNAL";
+    }
+   }
+   if(mouseX >= 255 && mouseX <= 430) {
+    //column 2
+    if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
+      //row = 1;
+      customSticker.text = "LOL";
+    }
+    if(mouseY >= Math.floor(vH /2) + 120 && mouseY <= Math.floor(vH /2) + 190) {
+      //row = 2;
+      customSticker.text = "CLICK ME";
+    }
+    if(mouseY >= Math.floor(vH /2) + 190 && mouseY <= Math.floor(vH /2) + 260) {
+      //row = 3;
+      customSticker.text = "I WAS HERE";
+    }
+   }
+ 
+
+}
 
   if(step == 1) {
     formSlider.style('display', 'block');

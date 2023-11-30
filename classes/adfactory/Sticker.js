@@ -38,6 +38,10 @@ class Sticker {
        this.w = 280;
        this.h = this.w;
        this.isStar = isStar
+       this.text = "";
+       this.textColor = "black";
+       this.textStyle = "normal";
+       this.textSize = 40;
     }
 
     render() {
@@ -59,6 +63,11 @@ class Sticker {
                 break;
             }
         }
+        fill( this.textColor);
+        textSize(this.textSize);
+        textStyle(this.textStyle);
+        textFont('dimensions');
+        text(this.text, this.x, this.y);
         pop();
     }
 
