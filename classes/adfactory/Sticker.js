@@ -8,7 +8,7 @@ function polygon(x, y, radius, npoints) {
         vertex(sx, sy);
     }
     endShape(CLOSE);
-    }
+}
 
 function star(x, y, radius1, radius2, npoints) {
     let angle = TWO_PI / npoints;
@@ -26,43 +26,36 @@ function star(x, y, radius1, radius2, npoints) {
 }
 
 
-class Shape {
+class Sticker {
 
-    constructor(shape, x, y) {
+    constructor(shape, x, y, isStar) {
        this.shape = shape;
        this.x = x;
        this.y = y;
        this.color = "white";
-       this.w = 70;
+       this.strokeWidth = 0;
+       this.strokeColor = "white";
+       this.w = 280;
        this.h = this.w;
+       this.isStar = isStar
     }
 
     render() {
-        console.log("render shape: " +this.shape)
         push();
         fill(this.color);
+        strokeWeight(this.strokeWidth);
+        stroke(this.strokeColor);
         switch(this.shape) {
-            case "rect": { 
-                console.log("switch rect " +this.shape)
-                rect(this.x, this.y, this.w, this.h);
-                break;
-            }
-            case "circle": {
-                console.log("switch circle " +this.shape)
+            case 0: {
                 circle(this.x, this.y, this.w);
                 break;
             }
-            case "star": {
-                console.log("switch star " +this.shape)
-                star(this.x, this.y, this.w/2, this.w/2 - 12, 5);
-                break;
-            }
-            case "poly": {
-                polygon(this.x, this.y, this.w/2, 3);
-                break;
-            }
             default: {
-                rect(this.x, this.y, this.w, this.h);
+                if(this.isStar) {
+                    star(this.x, this.y, this.w/2, this.w/2 - 50, this.shape);
+                } else {
+                    polygon(this.x, this.y, this.w/2, this.shape);
+                }
                 break;
             }
         }

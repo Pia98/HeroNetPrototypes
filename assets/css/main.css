@@ -5,6 +5,7 @@ body {
     background-size: cover;
     color: white;
     overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
 img {
