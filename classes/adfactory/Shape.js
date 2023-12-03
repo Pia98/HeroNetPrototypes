@@ -26,68 +26,45 @@ function star(x, y, radius1, radius2, npoints) {
 }
 
 
-class Sticker {
+class Shape {
 
     constructor(shape, x, y, isStar) {
        this.shape = shape;
        this.x = x;
        this.y = y;
        this.color = "white";
-       this.strokeWidth = 0;
-       this.strokeColor = "white";
-       this.rotation = 0;
-       this.w = 280;
+       this.w = 70;
        this.h = this.w;
        this.isStar = isStar
-       this.text = "";
-       this.textColor = "black";
-       this.textStyle = "normal";
-       this.textSize = 40;
-       this.textStroke = 0;
-       this.textStrokeColor = "white";
-       this.innerRadius = 50;
-       this.scale = 1;
     }
 
     render() {
+        console.log("render shape: " +this.shape)
         push();
-        translate(this.x, this.y);
         fill(this.color);
-        strokeWeight(this.strokeWidth);
-        stroke(this.strokeColor);
-        angleMode(DEGREES);
-        rotate(this.rotation);
-        angleMode(RADIANS);
-        scale(this.scale);
         switch(this.shape) {
+            case 4: { 
+                rect(this.x, this.y, this.w, this.h);
+                break;
+            }
             case 0: {
-                circle(0, 0, this.w);
+                circle(this.x, this.y, this.w);
+                break;
+            }
+            case 5: {
+                star(this.x, this.y, this.w/2, this.w/2 - 12, 5);
                 break;
             }
             default: {
                 if(this.isStar) {
-                    star(0, 0, this.w/2, this.w/2 - this.innerRadius, this.shape);
+                    star(this.x, this.y, this.w/2, this.w/2 - 12, this.shape);
+                    break;
                 } else {
-                    polygon(0, 0, this.w/2, this.shape);
+                    polygon(this.x, this.y, this.w/2, this.shape);
+                    break;
                 }
-                break;
             }
         }
-
-        rotate(-this.rotation);
-        pop();
-        push();
-        translate(this.x, this.y);
-        textAlign(CENTER, CENTER);
-        fill( this.textColor);
-        textSize(this.textSize);
-        textStyle(this.textStyle);
-        stroke(this.textStrokeColor);
-        strokeWeight(this.textStroke);
-        scale(this.scale);
-        textFont('dimensions');
-        text(this.text, 0, 0);
-
         pop();
     }
 

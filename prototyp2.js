@@ -8,8 +8,16 @@ const vW = window.innerWidth;
 let defaultTime = 7200;
 let TIMER;
 var fakeViewers;
+var botAmount = 10000;
+var botStickers = [];
 
-var step = 1;
+var step = 1; //change this for debug default should be 1 for testing
+
+//interaction step 6
+var lockedToMouse = false;
+var finalPos = false;
+var newX = vW/2;
+var newY = 180;
 
 let formSlider;
 let formRadiusSlider;
@@ -29,6 +37,7 @@ var shape = "star";
 var customSticker;
 
 var colorPalette = ["#F2328B", "#DA3FF3", "#9747FF", "#211885", "#030363", "#0065DC", "#01B7DF", "#80F2F2", "#3AF1BA"];
+var textPalette= ["NOPE!", "YEAH!", "NO SIGNAL", "LOL", "CLICK ME", "I WAS HERE"];
 
 
 // ----------- HELPERS --------------
@@ -40,7 +49,7 @@ function preload() {
 
 // ----------- SETUP --------------
 function setup() {
-  console.log("setup");
+  //console.log("setup");
   //first define our playground area -> took the whole space which is available
   createCanvas(vW, vH);
   frameRate(60);
@@ -57,9 +66,10 @@ function setup() {
   formRadiusSlider = createSlider(20, 130, 0, 10);
   formRadiusSlider.position(50, Math.floor(vH /2) + 250);
   formRadiusSlider.style('width', vW/1.2 +'px');
+  formRadiusSlider.style('display', 'none');
 
   colorSlider = createSlider(1, 9, 1, 1);
-  strokeWidthSlider = createSlider(1, 30, 1, 1);
+  strokeWidthSlider = createSlider(0, 30, 1, 0);
   strokeColorSlider = createSlider(1, 9, 1, 1);
   colorSlider.position(50, Math.floor(vH /2) + 110);
   colorSlider.style('width', vW/1.2 +'px');
@@ -73,7 +83,7 @@ function setup() {
 
   textColorSlider = createSlider(1, 9, 1, 1);
   textSizeSlider = createSlider(20, 200, 1, 1);
-  textStrokeSlider = createSlider(1, 50, 1, 1);
+  textStrokeSlider = createSlider(0, 50, 1, 0);
   textColorSlider.position(50, Math.floor(vH /2) + 110);
   textColorSlider.style('width', vW/1.2 +'px');
   textSizeSlider.position(50, Math.floor(vH /2) + 180);
@@ -89,6 +99,8 @@ function setup() {
   textStrokeColorSlider.style('width', vW/1.2 +'px');
   textStrokeColorSlider.style('display', 'none');
 
+
+  fakeViewers = new AdBots(botAmount);
 }
 
 // ----------- DRAW called every ms? --------------
@@ -98,12 +110,14 @@ function draw() {
   //console.log("clear");
 
   //3min
-  //TIMER--;
+  TIMER++;
 
   if(TIMER <= 0) {
     noLoop();
     stopGame();
   }
+
+  fakeViewers.update();
 
   if(DEBUG) {
     fill('white');
@@ -124,32 +138,34 @@ function draw() {
   
   loadSelectionScreen();
   
-  
+  if(TIMER % 60 == 0) {
+    checkIfFinished();
+  }
 }
 
 
 
 function loadSelectionScreen() {
   strokeWeight(0);
-  fill("white");
   textFont('Helvetica');
   textSize(25);
   textAlign(LEFT);
+  fill("#80F2F2");
 
   if(step == 1) {
     //show shapes
     text("Wähle eine Form", 180, 30);
 
     textSize(18);
-    text("ECKEN", 310, 125);
-    text("ROTIEREN", 265, 195);
-    text("AUSPRÄGUNG", 235, 265);
+    text("ECKEN", 310, 130);
+    text("ROTIEREN", 280, 195);
     if(customSticker == null) {
       customSticker = new Sticker(0, vW/2 - 30, -200, starCheckbox.checked());
     }
 
     if(starCheckbox.checked()) {
-      formRadiusSlider.style('display', 'block'); 
+      formRadiusSlider.style('display', 'block');
+      text("AUSPRÄGUNG", 235, 265);
     }
 
     if(formSlider.value() == 2 && !starCheckbox.checked()) {
@@ -195,7 +211,7 @@ function loadSelectionScreen() {
 
     textSize(18);
     text("FARBE", 315, 125);
-    text("GRÖSSE", 290, 195);
+    text("GRÖSSE", 300, 195);
 
     customSticker.textColor = colorPalette[textColorSlider.value() - 1];
     customSticker.textSize = textSizeSlider.value() - 1;
@@ -206,9 +222,30 @@ function loadSelectionScreen() {
 
     textSize(18);
     text("FARBE", 315, 125);
-    text("RANDDICKE", 315, 195);
+    text("RANDDICKE", 270, 195);
     customSticker.textStrokeColor = colorPalette[textStrokeColorSlider.value() - 1];
     customSticker.textStroke = textStrokeSlider.value();
+  }
+
+  if(step == 6) {
+    text("Platziere deinen Sticker", 100, 30);
+    customSticker.y = newY;
+    customSticker.x = newX;
+    if(finalPos) {
+      customSticker.scale = 0.1;
+    } else customSticker.scale = 0.5;
+    translate(- 30, -(Math.floor(vH /2) + 21));
+    fill("white");
+    rect(30, 30, vW - 60, vH/2 - 40);
+    //console.log("bots made stickers: " + botStickers.length);
+    botStickers.forEach(s => {
+      s.render();
+    });
+    translate(30, (Math.floor(vH /2) + 21));
+  } else {
+    customSticker.y = -200;
+    customSticker.x = vW/2 - 30;
+    customSticker.scale = 1;
   }
 
   customSticker.render();
@@ -230,11 +267,42 @@ function loadSelectionScreen() {
 
 // ----------- Move Controls --------------
 function mousePressed() {
-  
+  //translate(30, Math.floor(vH /2) + 21);
+  tmpX = newX + 30;
+  tmpY = newY + Math.floor(vH /2) + 21;
+  if (mouseX > tmpX - 280 &&
+    mouseX < tmpX + 280 &&
+    mouseY > tmpY - 280 &&
+    mouseY < tmpY + 280) {
+      //console.log("mousePressed on sticker");
+    lockedToMouse = true;
+  } else {
+    lockedToMouse = false;
+  }
+  xOffset = mouseX - newX;
+  yOffset = mouseY - newY;
 }
 
 function mouseDragged() {
+  //console.log(step == 6 && lockedToMouse );
+  if (step == 6 && lockedToMouse && !finalPos) {
+    newX = mouseX - xOffset;
+    newY = mouseY - yOffset;
+  }
+}
 
+function mouseReleased() {
+  lockedToMouse = false;
+  //check if sticker is in rect
+
+  if(step == 6) {
+    if(newX > 0 &&
+      newX < vW - 60 &&
+      newY > (-(Math.floor(vH /2) + 21) + 30) &&
+      newY < -30 ) {
+        finalPos = true;
+    }
+  }
 }
 
 function mouseClicked() {
@@ -342,4 +410,25 @@ if(step == 3) {
 
 function stopGame() {
   console.log("Time is up!");
+}
+
+function checkIfFinished() {
+  var pixels = get(30, 30, vW - 60, vH/2 - 40);
+  var count = 0;
+
+  for (let i = 0; i < pixels.width; i++) {
+    for (let j = 0; j < pixels.height; j++) {
+      // Get the color of the pixel.
+      let c = pixels.get(i, j);
+      if (hue(c) == 0) {
+        count++;
+      }
+    }
+  }
+  
+  console.log("MANy px are white" + count);
+
+  if(count <= 200) {
+    console.log("wall nearly full");
+  }
 }
