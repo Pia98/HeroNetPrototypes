@@ -12,10 +12,17 @@ var fakeViewers;
 var step = 1;
 
 let formSlider;
+let formRadiusSlider;
 let starCheckbox;
+let formRotationSlider;
 let colorSlider;
 let strokeWidthSlider;
 let strokeColorSlider;
+
+let textColorSlider;
+let textSizeSlider;
+let textStrokeSlider;
+let textStrokeColorSlider;
 
 var shape = "star";
 
@@ -39,16 +46,21 @@ function setup() {
   frameRate(60);
   TIMER = defaultTime;
 
-  formSlider = createSlider(2, 9, 2, 1);
+  formSlider = createSlider(2, 30, 2, 1);
   formSlider.position(50, Math.floor(vH /2) + 120);
   formSlider.style('width', vW/1.2 +'px');
   starCheckbox = createCheckbox(' STERN', false);
-  starCheckbox.position(50, Math.floor(vH /2) + 180); 
+  starCheckbox.position(50, Math.floor(vH /2) + 220); 
+  formRotationSlider = createSlider(0, 90, 0, 0.5);
+  formRotationSlider.position(50, Math.floor(vH /2) + 180);
+  formRotationSlider.style('width', vW/1.2 +'px');
+  formRadiusSlider = createSlider(20, 130, 0, 10);
+  formRadiusSlider.position(50, Math.floor(vH /2) + 250);
+  formRadiusSlider.style('width', vW/1.2 +'px');
 
-
-  colorSlider = createSlider(1, 9, 2, 1);
-  strokeWidthSlider = createSlider(1, 30, 2, 1);
-  strokeColorSlider = createSlider(1, 9, 2, 1);
+  colorSlider = createSlider(1, 9, 1, 1);
+  strokeWidthSlider = createSlider(1, 30, 1, 1);
+  strokeColorSlider = createSlider(1, 9, 1, 1);
   colorSlider.position(50, Math.floor(vH /2) + 110);
   colorSlider.style('width', vW/1.2 +'px');
   strokeWidthSlider.position(50, Math.floor(vH /2) + 180);
@@ -59,6 +71,24 @@ function setup() {
   strokeWidthSlider.style('display', 'none');
   strokeColorSlider.style('display', 'none');
 
+  textColorSlider = createSlider(1, 9, 1, 1);
+  textSizeSlider = createSlider(20, 200, 1, 1);
+  textStrokeSlider = createSlider(1, 50, 1, 1);
+  textColorSlider.position(50, Math.floor(vH /2) + 110);
+  textColorSlider.style('width', vW/1.2 +'px');
+  textSizeSlider.position(50, Math.floor(vH /2) + 180);
+  textSizeSlider.style('width', vW/1.2 +'px');
+  textStrokeSlider.position(50, Math.floor(vH /2) + 180);
+  textStrokeSlider.style('width', vW/1.2 +'px');
+  textColorSlider.style('display', 'none');
+  textSizeSlider.style('display', 'none');
+  textStrokeSlider.style('display', 'none');
+
+  textStrokeColorSlider = createSlider(1, 9, 1, 1);
+  textStrokeColorSlider.position(50, Math.floor(vH /2) + 110);
+  textStrokeColorSlider.style('width', vW/1.2 +'px');
+  textStrokeColorSlider.style('display', 'none');
+
 }
 
 // ----------- DRAW called every ms? --------------
@@ -68,7 +98,7 @@ function draw() {
   //console.log("clear");
 
   //3min
-  TIMER--;
+  //TIMER--;
 
   if(TIMER <= 0) {
     noLoop();
@@ -104,19 +134,34 @@ function loadSelectionScreen() {
   fill("white");
   textFont('Helvetica');
   textSize(25);
+  textAlign(LEFT);
 
   if(step == 1) {
     //show shapes
     text("Wähle eine Form", 180, 30);
 
     textSize(18);
-    text("ECKEN", 310, 135);
+    text("ECKEN", 310, 125);
+    text("ROTIEREN", 265, 195);
+    text("AUSPRÄGUNG", 235, 265);
+    if(customSticker == null) {
+      customSticker = new Sticker(0, vW/2 - 30, -200, starCheckbox.checked());
+    }
+
+    if(starCheckbox.checked()) {
+      formRadiusSlider.style('display', 'block'); 
+    }
 
     if(formSlider.value() == 2 && !starCheckbox.checked()) {
-      customSticker = new Sticker(0, vW/2 - 30, -200, starCheckbox.checked());
+      customSticker.shape = 0;
+      customSticker.isStar = starCheckbox.checked();
     } else {
-      customSticker = new Sticker(formSlider.value(), vW/2 - 30, -200, starCheckbox.checked());
+      customSticker.shape = formSlider.value();
+      customSticker.isStar = starCheckbox.checked();
     }
+
+    customSticker.rotation = formRotationSlider.value();
+    customSticker.innerRadius = formRadiusSlider.value();
   }
   if(step == 2) {
     //show shapes
@@ -145,14 +190,36 @@ function loadSelectionScreen() {
     text("I WAS HERE", 225, 240);
   }
 
-  customSticker.render();
+  if(step == 4) {
+    text("Wähle eine Schriftfarbe", 100, 30);
 
-  textFont('dimensions');
+    textSize(18);
+    text("FARBE", 315, 125);
+    text("GRÖSSE", 290, 195);
+
+    customSticker.textColor = colorPalette[textColorSlider.value() - 1];
+    customSticker.textSize = textSizeSlider.value() - 1;
+  }
+
+  if(step == 5) {
+    text("Wähle einen Rand", 100, 30);
+
+    textSize(18);
+    text("FARBE", 315, 125);
+    text("RANDDICKE", 315, 195);
+    customSticker.textStrokeColor = colorPalette[textStrokeColorSlider.value() - 1];
+    customSticker.textStroke = textStrokeSlider.value();
+  }
+
+  customSticker.render();
+  //translate(30, Math.floor(vH /2) + 21);
+  textAlign(LEFT);
+  textFont('Helvetica');
   fill("#80F2F2");
   polygon(vW - 70, vH/2 - 60, 20, 3);
   textSize(18);
   //text("WEITER", vW - 150, vH/2 - 53);
-  text(step + "/4", vW/2 - 20, vH/2 - 53);
+  text(step + "/6", vW/2 - 20, vH/2 - 53);
 
   translate(50, vH/2 - 60);
   //text("ZURÜCK", 20, 7);
@@ -174,8 +241,8 @@ function mouseClicked() {
   var d = dist(mouseX, mouseY, vW - 45, vH );
   if (d < 45) {
     step++;
-    if(step > 4) {
-      step = 4;
+    if(step >6) {
+      step = 6;
     }
     console.log("STEP:" + step);
 
@@ -238,9 +305,15 @@ if(step == 3) {
   if(step == 1) {
     formSlider.style('display', 'block');
     starCheckbox.style('display', 'block');
+    formRotationSlider.style('display', 'block');
+    if(starCheckbox.checked()) {
+      formRadiusSlider.style('display', 'block'); 
+    } else formRadiusSlider.style('display', 'none'); 
   } else {
     formSlider.style('display', 'none');
     starCheckbox.style('display', 'none');
+    formRotationSlider.style('display', 'none');
+    formRadiusSlider.style('display', 'none');
   }
   if(step == 2) {
     colorSlider.style('display', 'block');
@@ -250,6 +323,20 @@ if(step == 3) {
     colorSlider.style('display', 'none');
     strokeWidthSlider.style('display', 'none');
     strokeColorSlider.style('display', 'none');
+  }
+  if(step == 4) {
+    textColorSlider.style('display', 'block');
+    textSizeSlider.style('display', 'block');
+  } else {
+    textColorSlider.style('display', 'none');
+    textSizeSlider.style('display', 'none');
+  }
+  if(step == 5) {
+    textStrokeColorSlider.style('display', 'block');
+    textStrokeSlider.style('display', 'block');
+  } else {
+    textStrokeColorSlider.style('display', 'none');
+    textStrokeSlider.style('display', 'none');
   }
 }
 

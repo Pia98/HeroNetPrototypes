@@ -35,6 +35,7 @@ class Sticker {
        this.color = "white";
        this.strokeWidth = 0;
        this.strokeColor = "white";
+       this.rotation = 0;
        this.w = 280;
        this.h = this.w;
        this.isStar = isStar
@@ -42,32 +43,48 @@ class Sticker {
        this.textColor = "black";
        this.textStyle = "normal";
        this.textSize = 40;
+       this.textStroke = 0;
+       this.textStrokeColor = "white";
+       this.innerRadius = 50;
     }
 
     render() {
         push();
+        translate(this.x, this.y);
         fill(this.color);
         strokeWeight(this.strokeWidth);
         stroke(this.strokeColor);
+        angleMode(DEGREES);
+        rotate(this.rotation);
+        angleMode(RADIANS);
         switch(this.shape) {
             case 0: {
-                circle(this.x, this.y, this.w);
+                circle(0, 0, this.w);
                 break;
             }
             default: {
                 if(this.isStar) {
-                    star(this.x, this.y, this.w/2, this.w/2 - 50, this.shape);
+                    star(0, 0, this.w/2, this.w/2 - this.innerRadius, this.shape);
                 } else {
-                    polygon(this.x, this.y, this.w/2, this.shape);
+                    polygon(0, 0, this.w/2, this.shape);
                 }
                 break;
             }
         }
+
+        rotate(-this.rotation);
+        pop();
+        push();
+        translate(this.x, this.y);
+        textAlign(CENTER, CENTER);
         fill( this.textColor);
         textSize(this.textSize);
         textStyle(this.textStyle);
+        stroke(this.textStrokeColor);
+        strokeWeight(this.textStroke);
         textFont('dimensions');
-        text(this.text, this.x, this.y);
+        text(this.text, 0, 0);
+
         pop();
     }
 
