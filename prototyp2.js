@@ -5,11 +5,18 @@ const vH = window.innerHeight;
 const vW = window.innerWidth;
 
 //CONFIG
-let defaultTime = 7200;
+let defaultTime = 5400;
 let TIMER;
 var fakeViewers;
-var botAmount = 10000;
+var botAmount = 1000;
 var botStickers = [];
+var stickerScale = 0.1;
+
+var wallFull = false;
+
+var percentageUntilDone = 0;
+var oldStickerCount = 0;
+var whitePxs = 1000;
 
 var step = 1; //change this for debug default should be 1 for testing
 
@@ -39,7 +46,6 @@ var customSticker;
 var colorPalette = ["#F2328B", "#DA3FF3", "#9747FF", "#211885", "#030363", "#0065DC", "#01B7DF", "#80F2F2", "#3AF1BA"];
 var textPalette= ["NOPE!", "YEAH!", "NO SIGNAL", "LOL", "CLICK ME", "I WAS HERE"];
 
-
 // ----------- HELPERS --------------
 function preload() {
   mapImg = loadImage('assets/img/karte.png');
@@ -51,9 +57,11 @@ function preload() {
 function setup() {
   //console.log("setup");
   //first define our playground area -> took the whole space which is available
+  setAttributes('antialias', true);
+  setAttributes('willReadFrequently', true);
   createCanvas(vW, vH);
-  frameRate(60);
-  TIMER = defaultTime;
+  frameRate(30);
+  TIMER = 0;
 
   formSlider = createSlider(2, 30, 2, 1);
   formSlider.position(50, Math.floor(vH /2) + 120);
@@ -101,6 +109,8 @@ function setup() {
 
 
   fakeViewers = new AdBots(botAmount);
+
+  whitePxs = (vW - 60) * (vH/2 - 40);
 }
 
 // ----------- DRAW called every ms? --------------
@@ -109,13 +119,9 @@ function draw() {
 
   //console.log("clear");
 
+  push();
   //3min
   TIMER++;
-
-  if(TIMER <= 0) {
-    noLoop();
-    stopGame();
-  }
 
   fakeViewers.update();
 
@@ -134,13 +140,17 @@ function draw() {
   strokeWeight(2);
   translate(30, Math.floor(vH /2) + 21);
   rect(0, 0, vW - 20, Math.floor(vH /2) - 20);
-
   
   loadSelectionScreen();
-  
-  if(TIMER % 60 == 0) {
-    checkIfFinished();
+
+ if(TIMER % 15 == 0) {
+    //checkIfFinished();
   }
+  oldStickerCount = botStickers.length;
+
+  pop();
+  translate(30, Math.floor(vH /2) + 21);
+  renderProgressBar();
 }
 
 
@@ -227,21 +237,23 @@ function loadSelectionScreen() {
     customSticker.textStroke = textStrokeSlider.value();
   }
 
+  var translateX = 30;
+  var translateY = Math.floor(vH /2) + 21;
   if(step == 6) {
     text("Platziere deinen Sticker", 100, 30);
     customSticker.y = newY;
     customSticker.x = newX;
     if(finalPos) {
-      customSticker.scale = 0.1;
+      customSticker.scale = stickerScale;
     } else customSticker.scale = 0.5;
-    translate(- 30, -(Math.floor(vH /2) + 21));
+    translate(- translateX, -(translateY));
     fill("white");
     rect(30, 30, vW - 60, vH/2 - 40);
     //console.log("bots made stickers: " + botStickers.length);
     botStickers.forEach(s => {
       s.render();
     });
-    translate(30, (Math.floor(vH /2) + 21));
+    translate(translateX, (translateY));
   } else {
     customSticker.y = -200;
     customSticker.x = vW/2 - 30;
@@ -413,22 +425,47 @@ function stopGame() {
 }
 
 function checkIfFinished() {
-  var pixels = get(30, 30, vW - 60, vH/2 - 40);
-  var count = 0;
 
-  for (let i = 0; i < pixels.width; i++) {
-    for (let j = 0; j < pixels.height; j++) {
-      // Get the color of the pixel.
-      let c = pixels.get(i, j);
-      if (hue(c) == 0) {
-        count++;
+    var x = 30;
+    var y = 30;
+    var pixels = get(x, y, vW - 60, vH/2 - 40);
+    
+    var count = 0;
+  
+    for (let i = 0; i < pixels.width; i++) {
+      for (let j = 0; j < pixels.height; j++) {
+        // Get the color of the pixel.
+        let c = pixels.get(i, j);
+        if (hue(c) == 0) {
+          count++;
+        }
       }
     }
-  }
+    
+    if(count/146784 * 100 <= 10) {
+      console.log("wall nearly full");
+    }
+    percentageUntilDone = count/146784; 
   
-  console.log("MANy px are white" + count);
+}
 
-  if(count <= 200) {
-    console.log("wall nearly full");
+function renderProgressBar(){
+
+  fill("#01011E");
+  stroke("#80F2F2");
+  strokeWeight(2);
+  rect(-25, 0, 20, Math.floor(vH /2) - 20);
+  fill("#80F2F2");
+
+  if(step == 8) {
+    rect(-25, 0, 20, (Math.floor(vH /2) - 20) - (Math.floor(vH /2) - 20) * percentageUntilDone);
+    strokeWeight(0);
+    text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
+  } else {
+    var ugfShapePx = Math.PI *35*35 * stickerScale / 2;
+    var pxsPerBot = Math.floor(whitePxs / (botAmount + 1));
+    rect(-25, 0, 20, (Math.floor(vH /2) - 20) * ((ugfShapePx * botStickers.length) / whitePxs));
+    strokeWeight(0);
+    text(Math.floor((ugfShapePx * botStickers.length) / whitePxs * 100) + "%", -25, -15);
   }
 }
