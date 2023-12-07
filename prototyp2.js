@@ -8,7 +8,7 @@ const vW = window.innerWidth;
 let defaultTime = 5400;
 let TIMER;
 var fakeViewers;
-var botAmount = 1000;
+var botAmount = 5000;
 var botStickers = [];
 var stickerScale = 0.1;
 
@@ -46,6 +46,8 @@ var customSticker;
 var colorPalette = ["#F2328B", "#DA3FF3", "#9747FF", "#211885", "#030363", "#0065DC", "#01B7DF", "#80F2F2", "#3AF1BA"];
 var textPalette= ["NOPE!", "YEAH!", "NO SIGNAL", "LOL", "CLICK ME", "I WAS HERE"];
 
+var endTransform = - (Math.floor(vH /2) + 21);
+
 // ----------- HELPERS --------------
 function preload() {
   mapImg = loadImage('assets/img/karte.png');
@@ -64,27 +66,27 @@ function setup() {
   TIMER = 0;
 
   formSlider = createSlider(2, 30, 2, 1);
-  formSlider.position(50, Math.floor(vH /2) + 120);
-  formSlider.style('width', vW/1.2 +'px');
+  formSlider.position(20, Math.floor(vH /2) + 120);
+  formSlider.style('width', vW - 40 +'px');
   starCheckbox = createCheckbox(' STERN', false);
-  starCheckbox.position(50, Math.floor(vH /2) + 220); 
+  starCheckbox.position(20, Math.floor(vH /2) + 220); 
   formRotationSlider = createSlider(0, 90, 0, 0.5);
-  formRotationSlider.position(50, Math.floor(vH /2) + 180);
-  formRotationSlider.style('width', vW/1.2 +'px');
+  formRotationSlider.position(20, Math.floor(vH /2) + 180);
+  formRotationSlider.style('width', vW - 40 +'px');
   formRadiusSlider = createSlider(20, 130, 0, 10);
-  formRadiusSlider.position(50, Math.floor(vH /2) + 250);
-  formRadiusSlider.style('width', vW/1.2 +'px');
+  formRadiusSlider.position(20, Math.floor(vH /2) + 250);
+  formRadiusSlider.style('width', vW - 40 +'px');
   formRadiusSlider.style('display', 'none');
 
   colorSlider = createSlider(1, 9, 1, 1);
   strokeWidthSlider = createSlider(0, 30, 1, 0);
   strokeColorSlider = createSlider(1, 9, 1, 1);
-  colorSlider.position(50, Math.floor(vH /2) + 110);
-  colorSlider.style('width', vW/1.2 +'px');
-  strokeWidthSlider.position(50, Math.floor(vH /2) + 180);
-  strokeWidthSlider.style('width', vW/1.2 +'px');
-  strokeColorSlider.position(50, Math.floor(vH /2) + 250);
-  strokeColorSlider.style('width', vW/1.2 +'px');
+  colorSlider.position(20, Math.floor(vH /2) + 110);
+  colorSlider.style('width', vW - 40 +'px');
+  strokeWidthSlider.position(20, Math.floor(vH /2) + 180);
+  strokeWidthSlider.style('width', vW - 40 +'px');
+  strokeColorSlider.position(20, Math.floor(vH /2) + 250);
+  strokeColorSlider.style('width', vW - 40 +'px');
   colorSlider.style('display', 'none');
   strokeWidthSlider.style('display', 'none');
   strokeColorSlider.style('display', 'none');
@@ -92,19 +94,19 @@ function setup() {
   textColorSlider = createSlider(1, 9, 1, 1);
   textSizeSlider = createSlider(20, 200, 1, 1);
   textStrokeSlider = createSlider(0, 50, 1, 0);
-  textColorSlider.position(50, Math.floor(vH /2) + 110);
-  textColorSlider.style('width', vW/1.2 +'px');
-  textSizeSlider.position(50, Math.floor(vH /2) + 180);
-  textSizeSlider.style('width', vW/1.2 +'px');
-  textStrokeSlider.position(50, Math.floor(vH /2) + 180);
-  textStrokeSlider.style('width', vW/1.2 +'px');
+  textColorSlider.position(20, Math.floor(vH /2) + 110);
+  textColorSlider.style('width', vW - 40 +'px');
+  textSizeSlider.position(20, Math.floor(vH /2) + 180);
+  textSizeSlider.style('width', vW - 40 +'px');
+  textStrokeSlider.position(20, Math.floor(vH /2) + 180);
+  textStrokeSlider.style('width', vW - 40 +'px');
   textColorSlider.style('display', 'none');
   textSizeSlider.style('display', 'none');
   textStrokeSlider.style('display', 'none');
 
   textStrokeColorSlider = createSlider(1, 9, 1, 1);
-  textStrokeColorSlider.position(50, Math.floor(vH /2) + 110);
-  textStrokeColorSlider.style('width', vW/1.2 +'px');
+  textStrokeColorSlider.position(20, Math.floor(vH /2) + 110);
+  textStrokeColorSlider.style('width', vW - 40 +'px');
   textStrokeColorSlider.style('display', 'none');
 
 
@@ -138,8 +140,8 @@ function draw() {
   fill("#01011E");
   stroke("#80F2F2");
   strokeWeight(2);
-  translate(30, Math.floor(vH /2) + 21);
-  rect(0, 0, vW - 20, Math.floor(vH /2) - 20);
+  translate(0, Math.floor(vH /2) + 21);
+  rect(0, 0, vW, Math.floor(vH /2) - 20);
   
   loadSelectionScreen();
 
@@ -151,31 +153,65 @@ function draw() {
   pop();
   translate(30, Math.floor(vH /2) + 21);
   renderProgressBar();
+
+  if(wallFull) {
+    stopGame();
+  }
 }
 
 
 
 function loadSelectionScreen() {
+  
+  var translateX = 0;
+  var translateY = Math.floor(vH /2) + 21;
   strokeWeight(0);
   textFont('Helvetica');
   textSize(25);
   textAlign(LEFT);
   fill("#80F2F2");
 
+  if(wallFull) {
+    endTransform = endTransform - 20;
+    translate(- translateX, endTransform);
+  } else {
+    translate(- translateX, -(translateY));
+  }
+  fill("white");
+  rect(30, 30, vW - 60, vH/2 - 40);
+  //console.log("bots made stickers: " + botStickers.length);
+  botStickers.forEach(s => {
+    s.render();
+  });
+  if(step != 6 && !wallFull) {
+    const colorRect = color(0, 0, 0);
+    colorRect.setAlpha(150);
+    fill(colorRect);
+    rect(30, 30, vW - 60, vH/2 - 40);  
+  }
+
+  if(wallFull) {
+    translate(translateX, - endTransform);
+  } else {
+    translate(translateX, (translateY));
+  }
+
+  fill("#80F2F2");
+  textAlign(RIGHT, CENTER);
   if(step == 1) {
     //show shapes
-    text("Wähle eine Form", 180, 30);
+    text("Wähle eine Form", vW - 20, 30);
 
     textSize(18);
-    text("ECKEN", 310, 130);
-    text("ROTIEREN", 280, 195);
+    text("ECKEN", vW - 20, 130);
+    text("ROTIEREN", vW - 20, 195);
     if(customSticker == null) {
-      customSticker = new Sticker(0, vW/2 - 30, -200, starCheckbox.checked());
+      customSticker = new Sticker(0, vW/2, -200, starCheckbox.checked());
     }
 
     if(starCheckbox.checked()) {
       formRadiusSlider.style('display', 'block');
-      text("AUSPRÄGUNG", 235, 265);
+      text("AUSPRÄGUNG", vW - 20, 265);
     }
 
     if(formSlider.value() == 2 && !starCheckbox.checked()) {
@@ -191,12 +227,12 @@ function loadSelectionScreen() {
   }
   if(step == 2) {
     //show shapes
-    text("Wähle eine Farbe", 180, 30);
+    text("Wähle eine Farbe", vW - 20, 30);
 
     textSize(18);
-    text("FARBE", 315, 125);
-    text("RANDDICKE", 270, 195);
-    text("RANDFARBE", 265, 265);
+    text("FARBE", vW - 20, 125);
+    text("RANDDICKE", vW - 20, 195);
+    text("RANDFARBE", vW - 20, 265);
 
     customSticker.color = colorPalette[colorSlider.value() - 1];
     customSticker.strokeWidth = strokeWidthSlider.value() - 1;
@@ -204,9 +240,10 @@ function loadSelectionScreen() {
   }
 
   if(step == 3) {
-    text("Wähle einen Schriftzug", 110, 30);
+    text("Wähle einen Schriftzug", vW - 20, 30);
     //show shapes
     textSize(40);
+    textAlign(LEFT, BOTTOM);
     textFont('dimensions');
     text("NOPE!", 25, 100);
     text("YEAH!", 25, 170);
@@ -214,25 +251,26 @@ function loadSelectionScreen() {
     text("LOL", 225, 100);
     text("CLICK ME", 225, 170);
     text("I WAS HERE", 225, 240);
+    textAlign(CENTER, CENTER);
   }
 
   if(step == 4) {
-    text("Wähle eine Schriftfarbe", 100, 30);
+    text("Wähle eine Schriftfarbe", vW - 20, 30);
 
     textSize(18);
-    text("FARBE", 315, 125);
-    text("GRÖSSE", 300, 195);
+    text("FARBE", vW - 20, 125);
+    text("GRÖSSE", vW - 20, 195);
 
     customSticker.textColor = colorPalette[textColorSlider.value() - 1];
     customSticker.textSize = textSizeSlider.value() - 1;
   }
 
   if(step == 5) {
-    text("Wähle einen Rand", 100, 30);
+    text("Wähle einen Rand", vW - 20, 30);
 
     textSize(18);
-    text("FARBE", 315, 125);
-    text("RANDDICKE", 270, 195);
+    text("FARBE", vW - 20, 125);
+    text("RANDDICKE", vW - 20, 195);
     customSticker.textStrokeColor = colorPalette[textStrokeColorSlider.value() - 1];
     customSticker.textStroke = textStrokeSlider.value();
   }
@@ -240,32 +278,40 @@ function loadSelectionScreen() {
   var translateX = 30;
   var translateY = Math.floor(vH /2) + 21;
   if(step == 6) {
-    text("Platziere deinen Sticker", 100, 30);
-    customSticker.y = newY;
+    if(!finalPos) { 
+      text("Platziere deinen Sticker", vW - 20, 30);
+    }
+    //translate(- translateX, -(translateY));
     customSticker.x = newX;
+    if(wallFull && finalPos) {
+      newY = newY - 20;
+    }
+    customSticker.y = newY;
     if(finalPos) {
       customSticker.scale = stickerScale;
+      textAlign(CENTER, CENTER);
+      textSize(70);
+      textFont('dimensions');
+      text("Congrats!", vW/2, vH/4 - 30);
+      text("U did it", vW/2, vH/4 + 30);
+      textFont('Helvetica');
+      textSize(25);
+      textAlign(LEFT);
     } else customSticker.scale = 0.5;
-    translate(- translateX, -(translateY));
-    fill("white");
-    rect(30, 30, vW - 60, vH/2 - 40);
-    //console.log("bots made stickers: " + botStickers.length);
-    botStickers.forEach(s => {
-      s.render();
-    });
-    translate(translateX, (translateY));
   } else {
-    customSticker.y = -200;
-    customSticker.x = vW/2 - 30;
+    customSticker.y = - vH/4;
+    customSticker.x = vW/2;
     customSticker.scale = 1;
   }
 
-  customSticker.render();
+  if(!wallFull || finalPos) {
+    customSticker.render();
+  }
   //translate(30, Math.floor(vH /2) + 21);
   textAlign(LEFT);
   textFont('Helvetica');
   fill("#80F2F2");
-  polygon(vW - 70, vH/2 - 60, 20, 3);
+  polygon(vW - 40, vH/2 - 60, 20, 3);
   textSize(18);
   //text("WEITER", vW - 150, vH/2 - 53);
   text(step + "/6", vW/2 - 20, vH/2 - 53);
@@ -328,7 +374,7 @@ function mouseClicked() {
 
   }
 
-  var d = dist(mouseX, mouseY, 80, vH );
+  var d = dist(mouseX, mouseY, 50, vH);
   if (d < 45) {
     step--;
     if(step < 1 ) {
@@ -348,7 +394,7 @@ if(step == 3) {
     text("I WAS HERE", 225, 240);
    */
 
-   if(mouseX >= 55 && mouseX <= 230) {
+   if(mouseX >= 25 && mouseX <= 215) {
      //column 1
      if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
       //row = 1;
@@ -363,7 +409,7 @@ if(step == 3) {
       customSticker.text = "NO SIGNAL";
     }
    }
-   if(mouseX >= 255 && mouseX <= 430) {
+   if(mouseX >= 225 && mouseX <= vW) {
     //column 2
     if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
       //row = 1;
@@ -422,6 +468,15 @@ if(step == 3) {
 
 function stopGame() {
   console.log("Time is up!");
+  textAlign(CENTER, CENTER);
+  textSize(70);
+  textFont('dimensions');
+  fill("#80F2F2");
+  text("Wand voll", vW/2 - 30, -200);
+  text("Wird gelaunched", vW/2 - 30, -150);
+  textFont('Helvetica');
+  textSize(25);
+  textAlign(LEFT);
 }
 
 function checkIfFinished() {
@@ -454,18 +509,25 @@ function renderProgressBar(){
   fill("#01011E");
   stroke("#80F2F2");
   strokeWeight(2);
-  rect(-25, 0, 20, Math.floor(vH /2) - 20);
+  rect(-30, - vH/2 - 21, Math.floor(vH /2) - 20, 20);
   fill("#80F2F2");
 
-  if(step == 8) {
-    rect(-25, 0, 20, (Math.floor(vH /2) - 20) - (Math.floor(vH /2) - 20) * percentageUntilDone);
-    strokeWeight(0);
-    text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
-  } else {
-    var ugfShapePx = Math.PI *35*35 * stickerScale / 2;
+  // if(step == 8) {
+  //   rect(-25, 0, 20, (Math.floor(vH /2) - 20) - (Math.floor(vH /2) - 20) * percentageUntilDone);
+  //   strokeWeight(0);
+  //   text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
+  // } else {
+    var ugfShapePx = Math.PI *35*35 * stickerScale;
     var pxsPerBot = Math.floor(whitePxs / (botAmount + 1));
-    rect(-25, 0, 20, (Math.floor(vH /2) - 20) * ((ugfShapePx * botStickers.length) / whitePxs));
+    rect(-30, - vH/2 - 21, (Math.floor(vH /2) - 20) * ((ugfShapePx * botStickers.length) / whitePxs), 20);
     strokeWeight(0);
-    text(Math.floor((ugfShapePx * botStickers.length) / whitePxs * 100) + "%", -25, -15);
-  }
+    textSize(18);
+    if(Math.floor((ugfShapePx * botStickers.length) / whitePxs * 100 >= 85)) {
+      fill("#01011E");
+    }
+    text(Math.floor((ugfShapePx * botStickers.length) / whitePxs * 100) + "%", vW - 80, - vH/2 - 6);
+    if((ugfShapePx * botStickers.length) / whitePxs * 100 >= 100) {
+      wallFull = true;
+    }
+  //}
 }
