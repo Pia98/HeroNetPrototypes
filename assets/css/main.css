@@ -12,3 +12,30 @@ img {
   width: 100vw;
 }
 
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: space-around;
+  padding: 25px;
+}
+
+button {
+  padding: 15px;
+  background-color: transparent;
+  border: solid #80F2F2;
+  color: #80F2F2;
+}
+
+.join_btns {
+  position: absolute;
+  padding: 25px;
+  width: 100vw;
+  bottom: 20%;
+  left: 30%;
+}
+
+.join_btns > * {
+  margin: auto;
+}
