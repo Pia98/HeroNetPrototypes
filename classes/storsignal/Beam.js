@@ -1,7 +1,7 @@
 class Beam {
 
     constructor(img, posX) {
-        this.defaultY = window.innerHeight - 70;
+        this.defaultY = window.innerHeight - 120;
         this.pos = createVector(posX + 30, this.defaultY);
         this.speed = 10;
         this.w = 40;

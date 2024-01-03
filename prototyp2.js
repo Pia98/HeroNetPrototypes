@@ -8,7 +8,7 @@ const vW = window.innerWidth;
 let defaultTime = 5400;
 let TIMER;
 var fakeViewers;
-var botAmount = 5000;
+var botAmount = 1000;
 var botStickers = [];
 var stickerScale = 0.1;
 
@@ -62,7 +62,7 @@ function setup() {
   setAttributes('antialias', true);
   setAttributes('willReadFrequently', true);
   createCanvas(vW, vH);
-  frameRate(30);
+  frameRate(60);
   TIMER = 0;
 
   formSlider = createSlider(2, 30, 2, 1);
@@ -509,7 +509,7 @@ function renderProgressBar(){
   fill("#01011E");
   stroke("#80F2F2");
   strokeWeight(2);
-  rect(-30, - vH/2 - 21, Math.floor(vH /2) - 20, 20);
+  rect(-30, - vH/2 - 21, Math.floor(vW), 20);
   fill("#80F2F2");
 
   // if(step == 8) {
@@ -517,9 +517,9 @@ function renderProgressBar(){
   //   strokeWeight(0);
   //   text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
   // } else {
-    var ugfShapePx = Math.PI *35*35 * stickerScale;
+    var ugfShapePx = Math.PI *35*35 * stickerScale/2;
     var pxsPerBot = Math.floor(whitePxs / (botAmount + 1));
-    rect(-30, - vH/2 - 21, (Math.floor(vH /2) - 20) * ((ugfShapePx * botStickers.length) / whitePxs), 20);
+    rect(-30, - vH/2 - 21, (Math.floor(vW)) * ((ugfShapePx * botStickers.length) / whitePxs), 20);
     strokeWeight(0);
     textSize(18);
     if(Math.floor((ugfShapePx * botStickers.length) / whitePxs * 100 >= 85)) {

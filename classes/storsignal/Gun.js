@@ -7,7 +7,7 @@ class Gun {
         this.image = img;
         this.beamImg = beamImg;
 
-        this.defaultY = vH - this.h + 3;
+        this.defaultY = vH - this.h -50;
         this.pos = createVector(posX + 30, this.defaultY);
 
         this.cdTime = 20;

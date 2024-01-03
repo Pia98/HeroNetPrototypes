@@ -24,10 +24,10 @@ var oldMousePosX;
 let defaultTime = 7200;
 let TIMER;
 var fakeViewers;
-var botAmount = 10000;
+var botAmount = 0;
 var cooldownTimeBots = 120;
 var maxHealth = 20;
-var amountAds = 20;
+var amountAds = 5;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -54,6 +54,9 @@ function setup() {
   //+1 bc of user
   maxHealth = Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount/3)) / (amountAds));
 
+  if(botAmount == 0) {
+    maxHealth = 72;
+  }
   //Draw those enemies
   //always push the moving ads last
 
@@ -79,7 +82,7 @@ function setup() {
       Math.floor(Math.random() * (maxHealth - 200)) + 100,
       defaultTime - i*60 + 500);
     
-    console.log(ad.activationTime + " " +  ad.moving);
+    //console.log(ad.activationTime + " " +  ad.moving);
     allAds.push(ad);
   }
 

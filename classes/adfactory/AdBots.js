@@ -16,7 +16,7 @@ class AdBots {
 
             if(b.creationTime <= 0 && !(b.madeSticker) && !wallFull) {
                 //console.log("bot created sticker");
-                var botAd = new Sticker(Math.floor(Math.random() * 28 + 2), Math.floor(Math.random() * (vW - 60) + 30), Math.floor(Math.random() * (vH/2 - 40) + 30), Math.floor(Math.random()) == 0);
+                var botAd = new Sticker(Math.floor(Math.random() * 28 + 2), Math.floor(Math.random() * (vW - 60) + 30), Math.floor(Math.random() * (vH/2 - 40) + 30), Math.random() < 0.5);
                 botAd.scale = stickerScale;
                 botAd.color = colorPalette[Math.floor(Math.random() * 9)];
                 botAd.strokeColor = colorPalette[Math.floor(Math.random() * 9)];
