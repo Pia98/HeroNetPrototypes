@@ -8,9 +8,9 @@ const vW = window.innerWidth;
 let defaultTime = 5400;
 let TIMER;
 var fakeViewers;
-var botAmount = 1000;
+var botAmount = 2000;
 var botStickers = [];
-var stickerScale = 0.1;
+var stickerScale = 0.11;
 
 var wallFull = false;
 
@@ -18,7 +18,7 @@ var percentageUntilDone = 0;
 var oldStickerCount = 0;
 var whitePxs = 1000;
 
-var step = 1; //change this for debug default should be 1 for testing
+var step = 0; //change this for debug default should be 1 for testing
 
 //interaction step 6
 var lockedToMouse = false;
@@ -57,6 +57,37 @@ function preload() {
 
 // ----------- SETUP --------------
 function setup() {
+
+  joinBtn = createButton('TEILNEHMEN');
+  joinBtn.position(vW/2 - 60, vH /2 + 100);
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtn.mousePressed(() => {
+    step = 1;
+    joinBtn.style('display', 'none');
+  });
+
+  // joinBtnAgain = createButton('NOCHMAL TEILNEHMEN');
+  // joinBtnAgain.position(vW/2 - 95, vH /2 + 100);
+  // joinBtnAgain.style('display', 'none');
+
+  // // Change the button's value when the mouse
+  // // is pressed.
+  // joinBtnAgain.mousePressed(() => {
+  //   step = 1;
+  //   joinBtnAgain.style('display', 'none');
+
+  //   var tmp = customSticker;
+  //   tmp.y = tmp.y +  Math.floor(vH /2) + 21;
+    
+  //   botStickers.push(tmp);
+  //   customSticker = null;
+  //   finalPos = false;
+  //   newX = vW/2;
+  //   newY = 180;
+  // });
+
   //console.log("setup");
   //first define our playground area -> took the whole space which is available
   setAttributes('antialias', true);
@@ -64,51 +95,6 @@ function setup() {
   createCanvas(vW, vH);
   frameRate(60);
   TIMER = 0;
-
-  formSlider = createSlider(2, 30, 2, 1);
-  formSlider.position(20, Math.floor(vH /2) + 120);
-  formSlider.style('width', vW - 40 +'px');
-  starCheckbox = createCheckbox(' STERN', false);
-  starCheckbox.position(20, Math.floor(vH /2) + 220); 
-  formRotationSlider = createSlider(0, 90, 0, 0.5);
-  formRotationSlider.position(20, Math.floor(vH /2) + 180);
-  formRotationSlider.style('width', vW - 40 +'px');
-  formRadiusSlider = createSlider(20, 130, 0, 10);
-  formRadiusSlider.position(20, Math.floor(vH /2) + 250);
-  formRadiusSlider.style('width', vW - 40 +'px');
-  formRadiusSlider.style('display', 'none');
-
-  colorSlider = createSlider(1, 9, 1, 1);
-  strokeWidthSlider = createSlider(0, 30, 1, 0);
-  strokeColorSlider = createSlider(1, 9, 1, 1);
-  colorSlider.position(20, Math.floor(vH /2) + 110);
-  colorSlider.style('width', vW - 40 +'px');
-  strokeWidthSlider.position(20, Math.floor(vH /2) + 180);
-  strokeWidthSlider.style('width', vW - 40 +'px');
-  strokeColorSlider.position(20, Math.floor(vH /2) + 250);
-  strokeColorSlider.style('width', vW - 40 +'px');
-  colorSlider.style('display', 'none');
-  strokeWidthSlider.style('display', 'none');
-  strokeColorSlider.style('display', 'none');
-
-  textColorSlider = createSlider(1, 9, 1, 1);
-  textSizeSlider = createSlider(20, 200, 1, 1);
-  textStrokeSlider = createSlider(0, 50, 1, 0);
-  textColorSlider.position(20, Math.floor(vH /2) + 110);
-  textColorSlider.style('width', vW - 40 +'px');
-  textSizeSlider.position(20, Math.floor(vH /2) + 180);
-  textSizeSlider.style('width', vW - 40 +'px');
-  textStrokeSlider.position(20, Math.floor(vH /2) + 180);
-  textStrokeSlider.style('width', vW - 40 +'px');
-  textColorSlider.style('display', 'none');
-  textSizeSlider.style('display', 'none');
-  textStrokeSlider.style('display', 'none');
-
-  textStrokeColorSlider = createSlider(1, 9, 1, 1);
-  textStrokeColorSlider.position(20, Math.floor(vH /2) + 110);
-  textStrokeColorSlider.style('width', vW - 40 +'px');
-  textStrokeColorSlider.style('display', 'none');
-
 
   fakeViewers = new AdBots(botAmount);
 
@@ -136,12 +122,16 @@ function draw() {
     // text(Math.floor(vH /2), 10,window.innerHeight - 80);
   }
 
-  // Auswahlbox
+  
+    // Auswahlbox
+   
   fill("#01011E");
   stroke("#80F2F2");
   strokeWeight(2);
   translate(0, Math.floor(vH /2) + 21);
-  rect(0, 0, vW, Math.floor(vH /2) - 20);
+  if(step != 0) {
+    rect(0, 0, vW, Math.floor(vH /2) - 20);
+  }
   
   loadSelectionScreen();
 
@@ -157,11 +147,33 @@ function draw() {
   if(wallFull) {
     stopGame();
   }
+
+  // if(step == 1 && finalPos && !wallFull){
+  //   joinBtnAgain.style('display', 'block');
+  // } else {
+  //   joinBtnAgain.style('display', 'none');
+  // }
+  if(wallFull) {
+    joinBtn.style('display', 'none');
+  }
 }
 
 
 
 function loadSelectionScreen() {
+
+  if(customSticker == null) {
+    customSticker = new Sticker(Math.floor(Math.random() * 28 + 2), Math.floor(Math.random() * (vW - 60) + 30), Math.floor(Math.random() * (vH/2 - 40) + 30), Math.random() < 0.5);
+    customSticker.scale = stickerScale;
+    customSticker.color = colorPalette[Math.floor(Math.random() * 9)];
+    customSticker.strokeColor = colorPalette[Math.floor(Math.random() * 9)];
+    customSticker.textColor = colorPalette[Math.floor(Math.random() * 9)];
+    customSticker.textStrokeColor = colorPalette[Math.floor(Math.random() * 9)];
+    customSticker.text = textPalette[Math.floor(Math.random() * 6)];
+    customSticker.strokeWidth = Math.floor(Math.random() * 30);
+    customSticker.textStroke = Math.floor(Math.random() * 30);
+    customSticker.textSize = Math.floor(Math.random() * 180 + 20);
+  }
   
   var translateX = 0;
   var translateY = Math.floor(vH /2) + 21;
@@ -180,16 +192,15 @@ function loadSelectionScreen() {
   fill("white");
   rect(30, 30, vW - 60, vH/2 - 40);
   //console.log("bots made stickers: " + botStickers.length);
-  botStickers.forEach(s => {
+
+  
+  botStickers.forEach((s, index) => {
+    // console.log("-------------- " + index);
+    // console.log("x: " + s.x);
+    // console.log("y: " + s.y);
     s.render();
   });
-  if(step != 6 && !wallFull) {
-    const colorRect = color(0, 0, 0);
-    colorRect.setAlpha(150);
-    fill(colorRect);
-    rect(30, 30, vW - 60, vH/2 - 40);  
-  }
-
+ 
   if(wallFull) {
     translate(translateX, - endTransform);
   } else {
@@ -198,86 +209,11 @@ function loadSelectionScreen() {
 
   fill("#80F2F2");
   textAlign(RIGHT, CENTER);
-  if(step == 1) {
-    //show shapes
-    text("Wähle eine Form", vW - 20, 30);
-
-    textSize(18);
-    text("ECKEN", vW - 20, 130);
-    text("ROTIEREN", vW - 20, 195);
-    if(customSticker == null) {
-      customSticker = new Sticker(0, vW/2, -200, starCheckbox.checked());
-    }
-
-    if(starCheckbox.checked()) {
-      formRadiusSlider.style('display', 'block');
-      text("AUSPRÄGUNG", vW - 20, 265);
-    }
-
-    if(formSlider.value() == 2 && !starCheckbox.checked()) {
-      customSticker.shape = 0;
-      customSticker.isStar = starCheckbox.checked();
-    } else {
-      customSticker.shape = formSlider.value();
-      customSticker.isStar = starCheckbox.checked();
-    }
-
-    customSticker.rotation = formRotationSlider.value();
-    customSticker.innerRadius = formRadiusSlider.value();
-  }
-  if(step == 2) {
-    //show shapes
-    text("Wähle eine Farbe", vW - 20, 30);
-
-    textSize(18);
-    text("FARBE", vW - 20, 125);
-    text("RANDDICKE", vW - 20, 195);
-    text("RANDFARBE", vW - 20, 265);
-
-    customSticker.color = colorPalette[colorSlider.value() - 1];
-    customSticker.strokeWidth = strokeWidthSlider.value() - 1;
-    customSticker.strokeColor = colorPalette[strokeColorSlider.value() - 1];
-  }
-
-  if(step == 3) {
-    text("Wähle einen Schriftzug", vW - 20, 30);
-    //show shapes
-    textSize(40);
-    textAlign(LEFT, BOTTOM);
-    textFont('dimensions');
-    text("NOPE!", 25, 100);
-    text("YEAH!", 25, 170);
-    text("NO SIGNAL", 25, 240);
-    text("LOL", 225, 100);
-    text("CLICK ME", 225, 170);
-    text("I WAS HERE", 225, 240);
-    textAlign(CENTER, CENTER);
-  }
-
-  if(step == 4) {
-    text("Wähle eine Schriftfarbe", vW - 20, 30);
-
-    textSize(18);
-    text("FARBE", vW - 20, 125);
-    text("GRÖSSE", vW - 20, 195);
-
-    customSticker.textColor = colorPalette[textColorSlider.value() - 1];
-    customSticker.textSize = textSizeSlider.value() - 1;
-  }
-
-  if(step == 5) {
-    text("Wähle einen Rand", vW - 20, 30);
-
-    textSize(18);
-    text("FARBE", vW - 20, 125);
-    text("RANDDICKE", vW - 20, 195);
-    customSticker.textStrokeColor = colorPalette[textStrokeColorSlider.value() - 1];
-    customSticker.textStroke = textStrokeSlider.value();
-  }
+  
 
   var translateX = 30;
   var translateY = Math.floor(vH /2) + 21;
-  if(step == 6) {
+  if(step ==1) {
     if(!finalPos) { 
       text("Platziere deinen Sticker", vW - 20, 30);
     }
@@ -287,40 +223,43 @@ function loadSelectionScreen() {
       newY = newY - 20;
     }
     customSticker.y = newY;
-    if(finalPos) {
-      customSticker.scale = stickerScale;
-      textAlign(CENTER, CENTER);
-      textSize(70);
-      textFont('dimensions');
-      text("Congrats!", vW/2, vH/4 - 30);
-      text("U did it", vW/2, vH/4 + 30);
-      textFont('Helvetica');
-      textSize(25);
-      textAlign(LEFT);
-    } else customSticker.scale = 0.5;
-  } else {
-    customSticker.y = - vH/4;
-    customSticker.x = vW/2;
-    customSticker.scale = 1;
+    
+  }
+  if(step != 0) {
+    if(!wallFull || finalPos) {
+      // console.log("-------------- custom");
+      // console.log("x: " + customSticker.x);
+      // console.log("y: " + customSticker.y);
+      customSticker.render();
+    }
+  
+    //translate(30, Math.floor(vH /2) + 21);
+    // textAlign(LEFT);
+    // textFont('Helvetica');
+    // fill("#80F2F2");
+    // polygon(vW - 40, vH/2 - 60, 20, 3);
+    // textSize(18);
+    // //text("WEITER", vW - 150, vH/2 - 53);
+    // text(step + "/6", vW/2 - 20, vH/2 - 53);
+
+    // translate(50, vH/2 - 60);
+    // //text("ZURÜCK", 20, 7);
+    // rotate(66);
+    // polygon(0, 0, 20, 3);
   }
 
-  if(!wallFull || finalPos) {
-    customSticker.render();
-  }
-  //translate(30, Math.floor(vH /2) + 21);
-  textAlign(LEFT);
-  textFont('Helvetica');
-  fill("#80F2F2");
-  polygon(vW - 40, vH/2 - 60, 20, 3);
-  textSize(18);
-  //text("WEITER", vW - 150, vH/2 - 53);
-  text(step + "/6", vW/2 - 20, vH/2 - 53);
-
-  translate(50, vH/2 - 60);
-  //text("ZURÜCK", 20, 7);
-  rotate(66);
-  polygon(0, 0, 20, 3);
-
+  if(finalPos && step == 1) {
+    customSticker.scale = stickerScale;
+    
+    var tmp = customSticker;
+    tmp.y = tmp.y +  Math.floor(vH /2) + 21;
+    
+    botStickers.push(tmp);
+    customSticker = null;
+    finalPos = false;
+    newX = vW/2;
+    newY = 180;
+  } else customSticker.scale = 0.5;
 } 
 
 // ----------- Move Controls --------------
@@ -343,7 +282,7 @@ function mousePressed() {
 
 function mouseDragged() {
   //console.log(step == 6 && lockedToMouse );
-  if (step == 6 && lockedToMouse && !finalPos) {
+  if (step == 1 && lockedToMouse && !finalPos) {
     newX = mouseX - xOffset;
     newY = mouseY - yOffset;
   }
@@ -353,7 +292,7 @@ function mouseReleased() {
   lockedToMouse = false;
   //check if sticker is in rect
 
-  if(step == 6) {
+  if(step == 1) {
     if(newX > 0 &&
       newX < vW - 60 &&
       newY > (-(Math.floor(vH /2) + 21) + 30) &&
@@ -364,110 +303,14 @@ function mouseReleased() {
 }
 
 function mouseClicked() {
-  var d = dist(mouseX, mouseY, vW - 45, vH );
-  if (d < 45) {
-    step++;
-    if(step >6) {
-      step = 6;
-    }
-    console.log("STEP:" + step);
-
-  }
-
-  var d = dist(mouseX, mouseY, 50, vH);
-  if (d < 45) {
-    step--;
-    if(step < 1 ) {
-      step = 1;
-    }
-    console.log("STEP:" + step);
-  }
+  
 
 
-if(step == 3) {
-  /**
-   *  text("NOPE!", 25, 100);
-    text("YEAH!", 25, 170);
-    text("NO SIGNAL", 25, 240);
-    text("LOL", 225, 100);
-    text("CLICK ME", 225, 170);
-    text("I WAS HERE", 225, 240);
-   */
 
-   if(mouseX >= 25 && mouseX <= 215) {
-     //column 1
-     if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
-      //row = 1;
-      customSticker.text = "NOPE!";
-    }
-    if(mouseY >= Math.floor(vH /2) + 120 && mouseY <= Math.floor(vH /2) + 190) {
-      //row = 2;
-      customSticker.text = "YEAH!";
-    }
-    if(mouseY >= Math.floor(vH /2) + 190 && mouseY <= Math.floor(vH /2) + 260) {
-      //row = 3;
-      customSticker.text = "NO SIGNAL";
-    }
-   }
-   if(mouseX >= 225 && mouseX <= vW) {
-    //column 2
-    if(mouseY >= Math.floor(vH /2) + 50 && mouseY <= Math.floor(vH /2) + 120) {
-      //row = 1;
-      customSticker.text = "LOL";
-    }
-    if(mouseY >= Math.floor(vH /2) + 120 && mouseY <= Math.floor(vH /2) + 190) {
-      //row = 2;
-      customSticker.text = "CLICK ME";
-    }
-    if(mouseY >= Math.floor(vH /2) + 190 && mouseY <= Math.floor(vH /2) + 260) {
-      //row = 3;
-      customSticker.text = "I WAS HERE";
-    }
-   }
- 
-
-}
-
-  if(step == 1) {
-    formSlider.style('display', 'block');
-    starCheckbox.style('display', 'block');
-    formRotationSlider.style('display', 'block');
-    if(starCheckbox.checked()) {
-      formRadiusSlider.style('display', 'block'); 
-    } else formRadiusSlider.style('display', 'none'); 
-  } else {
-    formSlider.style('display', 'none');
-    starCheckbox.style('display', 'none');
-    formRotationSlider.style('display', 'none');
-    formRadiusSlider.style('display', 'none');
-  }
-  if(step == 2) {
-    colorSlider.style('display', 'block');
-    strokeWidthSlider.style('display', 'block');
-    strokeColorSlider.style('display', 'block');
-  } else {
-    colorSlider.style('display', 'none');
-    strokeWidthSlider.style('display', 'none');
-    strokeColorSlider.style('display', 'none');
-  }
-  if(step == 4) {
-    textColorSlider.style('display', 'block');
-    textSizeSlider.style('display', 'block');
-  } else {
-    textColorSlider.style('display', 'none');
-    textSizeSlider.style('display', 'none');
-  }
-  if(step == 5) {
-    textStrokeColorSlider.style('display', 'block');
-    textStrokeSlider.style('display', 'block');
-  } else {
-    textStrokeColorSlider.style('display', 'none');
-    textStrokeSlider.style('display', 'none');
-  }
 }
 
 function stopGame() {
-  console.log("Time is up!");
+  //console.log("Time is up!");
   textAlign(CENTER, CENTER);
   textSize(70);
   textFont('dimensions');
@@ -530,4 +373,9 @@ function renderProgressBar(){
       wallFull = true;
     }
   //}
+}
+
+function joinTheFactory() {
+  step = 1;
+  document.getElementById("join_btn").style.display = "none";
 }

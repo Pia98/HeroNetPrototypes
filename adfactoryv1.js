@@ -8,9 +8,9 @@ const vW = window.innerWidth;
 let defaultTime = 5400;
 let TIMER;
 var fakeViewers;
-var botAmount = 1000;
+var botAmount = 2000;
 var botStickers = [];
-var stickerScale = 0.1;
+var stickerScale = 0.11;
 
 var wallFull = false;
 
@@ -58,14 +58,34 @@ function preload() {
 // ----------- SETUP --------------
 function setup() {
 
-  button = createButton('TEILNEHMEN');
-  button.position(vW/2 - 60, vH /2 + 100);
+  joinBtn = createButton('TEILNEHMEN');
+  joinBtn.position(vW/2 - 60, vH /2 + 100);
 
   // Change the button's value when the mouse
   // is pressed.
-  button.mousePressed(() => {
+  joinBtn.mousePressed(() => {
     step = 1;
-    button.style('display', 'none');
+    joinBtn.style('display', 'none');
+  });
+
+  joinBtnAgain = createButton('NOCHMAL TEILNEHMEN');
+  joinBtnAgain.position(vW/2 - 95, vH /2 + 100);
+  joinBtnAgain.style('display', 'none');
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtnAgain.mousePressed(() => {
+    step = 1;
+    joinBtnAgain.style('display', 'none');
+
+    var tmp = customSticker;
+    tmp.y = tmp.y +  Math.floor(vH /2) + 21;
+    
+    botStickers.push(tmp);
+    customSticker = null;
+    finalPos = false;
+    newX = vW/2;
+    newY = 180;
   });
 
   //console.log("setup");
@@ -176,6 +196,15 @@ function draw() {
   if(wallFull) {
     stopGame();
   }
+
+  if(step == 6 && finalPos && !wallFull){
+    joinBtnAgain.style('display', 'block');
+  } else {
+    joinBtnAgain.style('display', 'none');
+  }
+  if(wallFull) {
+    joinBtn.style('display', 'none');
+  }
 }
 
 
@@ -199,7 +228,12 @@ function loadSelectionScreen() {
   fill("white");
   rect(30, 30, vW - 60, vH/2 - 40);
   //console.log("bots made stickers: " + botStickers.length);
-  botStickers.forEach(s => {
+
+  
+  botStickers.forEach((s, index) => {
+    // console.log("-------------- " + index);
+    // console.log("x: " + s.x);
+    // console.log("y: " + s.y);
     s.render();
   });
   if(step != 6 && !wallFull && step != 0) {
@@ -327,6 +361,9 @@ function loadSelectionScreen() {
 
   if(step != 0) {
     if(!wallFull || finalPos) {
+      // console.log("-------------- custom");
+      // console.log("x: " + customSticker.x);
+      // console.log("y: " + customSticker.y);
       customSticker.render();
     }
   
@@ -393,7 +430,7 @@ function mouseClicked() {
     if(step >6) {
       step = 6;
     }
-    console.log("STEP:" + step);
+    //console.log("STEP:" + step);
 
   }
 
@@ -403,7 +440,7 @@ function mouseClicked() {
     if(step < 1 ) {
       step = 1;
     }
-    console.log("STEP:" + step);
+    //console.log("STEP:" + step);
   }
 
 
