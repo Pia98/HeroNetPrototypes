@@ -1,5 +1,5 @@
-const DEBUG = true;
-
+const DEBUG = false;
+var step = 0;
 //DO NOT TOUCH -- just needed for computation bc we want to take all the space we have
 const vH = window.innerHeight;
 const vW = window.innerWidth;
@@ -14,6 +14,7 @@ let shooter;
 //ENEMIEES
 const amount = 10;
 let allAds = [];
+let userAds = [];
 
 //LASER
 let pos;
@@ -21,13 +22,13 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let defaultTime = 1800;
+let defaultTime = 3600;
 let TIMER;
 var fakeViewers;
-var botAmount = 0;
-var cooldownTimeBots = 120;
+var botAmount = 99;
+var cooldownTimeBots = 30;
 var maxHealth = 500;
-var amountAds = 1000;
+var amountAds = 100;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -50,15 +51,18 @@ function setup() {
   setAttributes('willReadFrequently', true);
   //first define our playground area -> took the whole space which is available
   createCanvas(vW, vH);
-  frameRate(60);
+  frameRate(30);
   TIMER = defaultTime;
 
   //+1 bc of user
-  maxHealth = Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount/3)) / (amountAds));
+  // maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount)) / (amountAds));
+  // console.log(maxHealth);
 
-  if(botAmount == 0) {
-    maxHealth = 72;
-  }
+  amountAds = (botAmount + 1) * 5;
+
+ // if(botAmount == 0) {
+    maxHealth = 10;
+ // }
   //Draw those enemies
   //always push the moving ads last
 
@@ -72,7 +76,7 @@ function setup() {
   adImgs.push(ad7Img);
   adImgs.push(ad8Img);
 
-  for(var i = 0; i <= amountAds; i++) {
+  for(var i = 0; i < amountAds; i++) {
     var index = Math.floor(Math.random() * (adImgs.length -1));
     
     var tmpImg = adImgs[index];
@@ -81,29 +85,58 @@ function setup() {
       (Math.random() * 200) + 50,
       tmpImg.width / 6,
       tmpImg.height / 6,
-      Math.floor(Math.random() * (maxHealth - 200)) + 100,
-      Math.floor(defaultTime - ((defaultTime - 400)/amountAds)*i));
+      Math.floor(Math.random() * (maxHealth)) + 1,
+      defaultTime);
+    if( (amountAds - 5) <= i && i <= amountAds) {
+      userAds.push(ad);
+    } else  allAds.push(ad);
     //console.log(ad.activationTime + " " +  ad.moving);
-    allAds.push(ad);
   }
 
+  console.log(allAds.length);
+  console.log(userAds.length);
 
   oldMousePosX = mouseX;
 
   shooter = new Gun(gunImg, laserImg, vW/2 - 50);
 
   fakeViewers = new Bots(botAmount, cooldownTimeBots);
+
+  joinBtn = createButton('TEILNEHMEN');
+  joinBtn.position(vW/2 - 60, vH /2 + 100);
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtn.mousePressed(() => {
+    step = 1;
+    joinBtn.style('display', 'none');
+  });
+
+  joinBtnAgain = createButton('NOCHMAL TEILNEHMEN');
+  joinBtnAgain.position(vW/2 - 95, vH /2 + 100);
+  joinBtnAgain.style('display', 'none');
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtnAgain.mousePressed(() => {
+    step = 1;
+    joinBtnAgain.style('display', 'none');
+    var tmp = allAds.splice((allAds.length) - 5, allAds.length)
+    tmp.forEach( o => {
+      userAds.push(o);
+    })
+  });
 }
 
 // ----------- DRAW called every ms? --------------
 function draw() {
   clear();
-
+  textFont('Helvetica');
   //3min
   TIMER--;
 
   if(TIMER <= 0) {
-    //noLoop();
+    noLoop();
     stopGame();
     
   }
@@ -113,24 +146,58 @@ function draw() {
   mapImg.resize(vW + 240, 0);
   image(mapImg, 0 - 120, 20);
   
+  if(step == 0) {
+    textFont('Helvetica');
+    textSize(10);
+    textAlign(CENTER, BOTTOM);
+    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
+    text("Mache jetzt mit und zerstöre 5 Ads", vW/2, vH /2 + 80);
+  }
+
+  var deadAds = 0;
+
   allAds.forEach((a) => {
+    if(a != null && a.activationTime >= TIMER && step == 0) {
+      a.render();
+    }
+    if(a.dead) deadAds++;
+  });
+  userAds.forEach((a) => {
     if(a != null && a.activationTime >= TIMER) {
       a.render();
-  }})
+    }
+    if(a.dead) deadAds++;
+  })
 
-  shooter.render();
+  if(step == 1) {
+    shooter.render();
+  }
   fakeViewers.update();
 
+  fill('#80F2F2');
+  textSize(30);
+  textAlign(LEFT, BOTTOM);
+  //textFont('dimensions');
+  text((Math.round(TIMER / 30)).toString() + "s", 10, this.innerHeight - 5);
+  textAlign(RIGHT, BOTTOM);
+  //textFont('dimensions');
+  text(deadAds + "/" + amountAds, this.innerWidth - 10, this.innerHeight - 5);
+
   if(DEBUG) {
+    textFont('Helvetica');
     fill('white');
     textSize(10);
-    text((Math.round(TIMER / 60)).toString() + "s", 10, this.innerHeight - 60);
     text("BOT AMOUNT: " + (botAmount).toString(), 10, this.innerHeight - 50);
     text("BOT cooldown: " + (cooldownTimeBots).toString(), 10, this.innerHeight - 40);
     text("AD amount: " + (amountAds).toString(), 10, this.innerHeight - 30);
     text("max. AD health: " + (maxHealth).toString(), 10, this.innerHeight - 20);
   }
   
+  var allKilled = userAds.every(o => o.dead == true);
+  if(allKilled) {
+    step = 0;
+    joinBtnAgain.style('display', 'block');
+  }
 }
 
 // ----------- Move the Laser Controls --------------
@@ -149,7 +216,8 @@ function mouseDragged() {
 }
 
 function stopGame() {
-  console.log("Time is up!");
+  
+  //console.log("Time is up!");
   textAlign(CENTER, CENTER);
   textSize(70);
   textFont('dimensions');

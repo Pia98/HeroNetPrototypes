@@ -10,7 +10,7 @@ let TIMER;
 var fakeViewers;
 var botAmount = 2000;
 var botStickers = [];
-var stickerScale = 0.11;
+var stickerScale = 0.15;
 
 var wallFull = false;
 
@@ -93,7 +93,7 @@ function setup() {
   setAttributes('antialias', true);
   setAttributes('willReadFrequently', true);
   createCanvas(vW, vH);
-  frameRate(60);
+  frameRate(30);
   TIMER = 0;
 
   formSlider = createSlider(2, 30, 2, 1);

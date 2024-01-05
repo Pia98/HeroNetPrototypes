@@ -1,5 +1,5 @@
 const DEBUG = true;
-
+var step = 0;
 //DO NOT TOUCH -- just needed for computation bc we want to take all the space we have
 const vH = window.innerHeight;
 const vW = window.innerWidth;
@@ -24,10 +24,10 @@ var oldMousePosX;
 let defaultTime = 1800;
 let TIMER;
 var fakeViewers;
-var botAmount = 0;
+var botAmount = 2000;
 var cooldownTimeBots = 120;
 var maxHealth = 500;
-var amountAds = 1000;
+var amountAds = 100;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -50,11 +50,12 @@ function setup() {
   setAttributes('willReadFrequently', true);
   //first define our playground area -> took the whole space which is available
   createCanvas(vW, vH);
-  frameRate(60);
+  frameRate(30);
   TIMER = defaultTime;
 
   //+1 bc of user
-  maxHealth = Math.floor((((TIMER - 100) / cooldownTimeBots) * (botAmount/3)) / (amountAds));
+  maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount)) / (amountAds));
+  console.log(maxHealth);
 
   if(botAmount == 0) {
     maxHealth = 72;
@@ -93,6 +94,27 @@ function setup() {
   shooter = new Gun(gunImg, laserImg, vW/2 - 50);
 
   fakeViewers = new Bots(botAmount, cooldownTimeBots);
+
+  joinBtn = createButton('TEILNEHMEN');
+  joinBtn.position(vW/2 - 60, vH /2 + 100);
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtn.mousePressed(() => {
+    step = 1;
+    joinBtn.style('display', 'none');
+  });
+
+  joinBtnAgain = createButton('NOCHMAL TEILNEHMEN');
+  joinBtnAgain.position(vW/2 - 95, vH /2 + 100);
+  joinBtnAgain.style('display', 'none');
+
+  // Change the button's value when the mouse
+  // is pressed.
+  joinBtnAgain.mousePressed(() => {
+    step = 1;
+    joinBtnAgain.style('display', 'none');
+  });
 }
 
 // ----------- DRAW called every ms? --------------
@@ -118,13 +140,21 @@ function draw() {
       a.render();
   }})
 
-  shooter.render();
+  if(step == 1) {
+    shooter.render();
+  }
   fakeViewers.update();
 
+  fill('#80F2F2');
+  textSize(40);
+  textAlign(LEFT, BOTTOM);
+  textFont('dimensions');
+  text((Math.round(TIMER / 60)).toString() + "s", 10, this.innerHeight - 60);
+
   if(DEBUG) {
+    textFont('Helvetica');
     fill('white');
     textSize(10);
-    text((Math.round(TIMER / 60)).toString() + "s", 10, this.innerHeight - 60);
     text("BOT AMOUNT: " + (botAmount).toString(), 10, this.innerHeight - 50);
     text("BOT cooldown: " + (cooldownTimeBots).toString(), 10, this.innerHeight - 40);
     text("AD amount: " + (amountAds).toString(), 10, this.innerHeight - 30);
@@ -149,7 +179,7 @@ function mouseDragged() {
 }
 
 function stopGame() {
-  console.log("Time is up!");
+  //console.log("Time is up!");
   textAlign(CENTER, CENTER);
   textSize(70);
   textFont('dimensions');

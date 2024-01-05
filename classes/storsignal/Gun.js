@@ -10,7 +10,7 @@ class Gun {
         this.defaultY = vH - this.h -50;
         this.pos = createVector(posX + 30, this.defaultY);
 
-        this.cdTime = 20;
+        this.cdTime = 10;
         this.cooldown = 0;
         this.laserBeams = [];
     }
@@ -23,7 +23,7 @@ class Gun {
         this.laserBeams.forEach((b, ind) => {
            b.update();
            b.render();
-           allAds.forEach((a, index) => {
+           userAds.forEach((a, index) => {
             var collided = false;
             if(a.dead) { collided = false;}
             else collided = b.colliding(a);

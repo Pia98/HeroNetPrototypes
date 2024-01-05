@@ -16,17 +16,18 @@ class Bot {
                 
                 var index = Math.floor(Math.random() * allAds.length);
                 
-                if(!allAds[index].dead) {
-                    allAds[index].botHit();
+                
+                // if(!allAds[index].dead) {
+                //     allAds[index].botHit();
                     
-                } else {
+                // } else {
                     for(var i = 0; i< allAds.length; i++) {
                         if(!allAds[i].dead) {
                             allAds[i].botHit();
                             break;
                         }
                     }
-                }
+                // }
                 
             }
         }

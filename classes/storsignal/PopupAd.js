@@ -3,8 +3,8 @@ class PopupAd {
   constructor(img, x, y, w, h, health, activationTime) {
     this.image = img;
     this.pos = createVector(x, y);
-    this.width = w*1.3;
-    this.height = h*1.3;
+    this.width = w*1;
+    this.height = h*1;
     this.dead = false;
     this.moveRight = false;
     this.moveUp = false;
@@ -135,20 +135,20 @@ class PopupAd {
         if (this.animTimer > 0 ) {
           
           if(this.jitterLeft) {
-            this.jitter -= 1.5;
-          } else this.jitter += 1.5;
+            this.jitter -= 3;
+          } else this.jitter += 3;
 
-          if(this.jitter < -4) {
+          if(this.jitter < -5) {
             this.jitterLeft = false;
           }
-          if(this.jitter > 4) {
+          if(this.jitter > 5) {
             this.jitterLeft = true;
           }
 
-          if(this.width >= 20) {
-            this.width *= 0.997;
-            this.height *= 0.997;
-          }
+          // if(this.width >= 20) {
+          //   this.width *= 0.997;
+          //   this.height *= 0.997;
+          // }
           image(this.image, 0 + this.jitter, 0, this.width, this.height);
           this.animTimer --;
         } else {
