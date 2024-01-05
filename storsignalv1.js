@@ -21,13 +21,13 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let defaultTime = 7200;
+let defaultTime = 1800;
 let TIMER;
 var fakeViewers;
 var botAmount = 0;
 var cooldownTimeBots = 120;
-var maxHealth = 20;
-var amountAds = 5;
+var maxHealth = 500;
+var amountAds = 1000;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -46,6 +46,8 @@ function preload() {
 
 // ----------- SETUP --------------
 function setup() {
+  setAttributes('antialias', true);
+  setAttributes('willReadFrequently', true);
   //first define our playground area -> took the whole space which is available
   createCanvas(vW, vH);
   frameRate(60);
@@ -80,8 +82,7 @@ function setup() {
       tmpImg.width / 6,
       tmpImg.height / 6,
       Math.floor(Math.random() * (maxHealth - 200)) + 100,
-      defaultTime - i*60 + 500);
-    
+      Math.floor(defaultTime - ((defaultTime - 400)/amountAds)*i));
     //console.log(ad.activationTime + " " +  ad.moving);
     allAds.push(ad);
   }
@@ -102,7 +103,7 @@ function draw() {
   TIMER--;
 
   if(TIMER <= 0) {
-    noLoop();
+    //noLoop();
     stopGame();
     
   }
@@ -149,4 +150,12 @@ function mouseDragged() {
 
 function stopGame() {
   console.log("Time is up!");
+  textAlign(CENTER, CENTER);
+  textSize(70);
+  textFont('dimensions');
+  fill("#80F2F2");
+  text("Zeit abgelaufen", vW/2, vH/2);
+  textFont('Helvetica');
+  textSize(25);
+  textAlign(LEFT);
 }

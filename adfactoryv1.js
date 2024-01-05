@@ -50,9 +50,9 @@ var endTransform = - (Math.floor(vH /2) + 21);
 
 // ----------- HELPERS --------------
 function preload() {
-  mapImg = loadImage('assets/img/karte.png');
-  gunImg = loadImage('assets/img/shooter.png');
-  laserImg = loadImage('assets/img/beam.png');
+  // mapImg = loadImage('assets/img/karte.png');
+  // gunImg = loadImage('assets/img/shooter.png');
+  // laserImg = loadImage('assets/img/beam.png');
 }
 
 // ----------- SETUP --------------
@@ -577,7 +577,7 @@ function renderProgressBar(){
   //   strokeWeight(0);
   //   text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
   // } else {
-    var ugfShapePx = Math.PI *35*35 * stickerScale/2;
+    var ugfShapePx = Math.PI *35*35 * stickerScale/1.2;
     var pxsPerBot = Math.floor(whitePxs / (botAmount + 1));
     rect(-30, - vH/2 - 21, (Math.floor(vW)) * ((ugfShapePx * botStickers.length) / whitePxs), 20);
     strokeWeight(0);
