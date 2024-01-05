@@ -1,9 +1,10 @@
-const DEBUG = true;
+const DEBUG = false;
 var step = 0;
 //DO NOT TOUCH -- just needed for computation bc we want to take all the space we have
 const vH = window.innerHeight;
 const vW = window.innerWidth;
 
+const isIsolated = false;
 //GAMEMANGER STUFF
 let shot = false;
 
@@ -14,6 +15,7 @@ let shooter;
 //ENEMIEES
 const amount = 10;
 let allAds = [];
+let userAds = [];
 
 //LASER
 let pos;
@@ -21,13 +23,13 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let defaultTime = 1800;
+let defaultTime = 3600;
 let TIMER;
 var fakeViewers;
-var botAmount = 2000;
-var cooldownTimeBots = 120;
+var botAmount = 99;
+var cooldownTimeBots = 30;
 var maxHealth = 500;
-var amountAds = 100;
+var amountAds = 50;
 
 // ----------- HELPERS --------------
 function preload() {
@@ -54,11 +56,12 @@ function setup() {
   TIMER = defaultTime;
 
   //+1 bc of user
-  maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount)) / (amountAds));
-  console.log(maxHealth);
+   maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount/2)) / (amountAds));
+   console.log(maxHealth);
+
 
   if(botAmount == 0) {
-    maxHealth = 72;
+    maxHealth = 10;
   }
   //Draw those enemies
   //always push the moving ads last
@@ -73,21 +76,27 @@ function setup() {
   adImgs.push(ad7Img);
   adImgs.push(ad8Img);
 
-  for(var i = 0; i <= amountAds; i++) {
+  for(var i = 0; i < amountAds; i++) {
     var index = Math.floor(Math.random() * (adImgs.length -1));
     
     var tmpImg = adImgs[index];
+
+    var launch = Math.floor(Math.random() * (defaultTime - 2000) + 2000);
+    if(i < 11 ) {
+      launch = defaultTime;
+    }
     var ad = new PopupAd(tmpImg,
       vW/2 + ((Math.random() * 190) - (Math.random() * 190)),
       (Math.random() * 200) + 50,
       tmpImg.width / 6,
       tmpImg.height / 6,
-      Math.floor(Math.random() * (maxHealth - 200)) + 100,
-      Math.floor(defaultTime - ((defaultTime - 400)/amountAds)*i));
-    //console.log(ad.activationTime + " " +  ad.moving);
+      Math.floor(Math.random() * (maxHealth)) + 1,
+      launch);
     allAds.push(ad);
+    //console.log(ad.activationTime + " " +  ad.moving);
   }
 
+  console.log(allAds.length);
 
   oldMousePosX = mouseX;
 
@@ -114,18 +123,19 @@ function setup() {
   joinBtnAgain.mousePressed(() => {
     step = 1;
     joinBtnAgain.style('display', 'none');
+    
   });
 }
 
 // ----------- DRAW called every ms? --------------
 function draw() {
   clear();
-
+  textFont('Helvetica');
   //3min
   TIMER--;
 
   if(TIMER <= 0) {
-    //noLoop();
+    noLoop();
     stopGame();
     
   }
@@ -135,21 +145,37 @@ function draw() {
   mapImg.resize(vW + 240, 0);
   image(mapImg, 0 - 120, 20);
   
+
+  var deadAds = 0;
+
   allAds.forEach((a) => {
     if(a != null && a.activationTime >= TIMER) {
       a.render();
-  }})
+    }
+    if(a.dead) deadAds++;
+  });
 
   if(step == 1) {
     shooter.render();
   }
   fakeViewers.update();
 
+  if(step == 0 && deadAds != amountAds) {
+    textFont('Helvetica');
+    textSize(10);
+    textAlign(CENTER, BOTTOM);
+    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
+    text("Mache jetzt mit!", vW/2, vH /2 + 80);
+  }
+
   fill('#80F2F2');
-  textSize(40);
+  textSize(30);
   textAlign(LEFT, BOTTOM);
-  textFont('dimensions');
-  text((Math.round(TIMER / 60)).toString() + "s", 10, this.innerHeight - 60);
+  //textFont('dimensions');
+  text((Math.round(TIMER / 30)).toString() + "s", 10, this.innerHeight - 5);
+  textAlign(RIGHT, BOTTOM);
+  //textFont('dimensions');
+  text(deadAds + "/" + amountAds, this.innerWidth - 10, this.innerHeight - 5);
 
   if(DEBUG) {
     textFont('Helvetica');
@@ -161,6 +187,20 @@ function draw() {
     text("max. AD health: " + (maxHealth).toString(), 10, this.innerHeight - 20);
   }
   
+
+  if(deadAds == amountAds) {
+     
+    //console.log("Time is up!");
+    textAlign(CENTER, CENTER);
+    textSize(60);
+    textFont('dimensions');
+    fill("#80F2F2");
+    text("Yay!", vW/2, vH/2);
+    text("Ihr habt es geschafft", vW/2, vH/2 + 70);
+    joinBtnAgain.style('display', 'none');
+    joinBtn.style('display', 'none');
+    //noLoop();
+  }
 }
 
 // ----------- Move the Laser Controls --------------
@@ -179,13 +219,11 @@ function mouseDragged() {
 }
 
 function stopGame() {
+  
   //console.log("Time is up!");
   textAlign(CENTER, CENTER);
-  textSize(70);
+  textSize(60);
   textFont('dimensions');
   fill("#80F2F2");
-  text("Zeit abgelaufen", vW/2, vH/2);
-  textFont('Helvetica');
-  textSize(25);
-  textAlign(LEFT);
+  text("Zeit abgelaufen", vW/2, vH/2 + 140);
 }

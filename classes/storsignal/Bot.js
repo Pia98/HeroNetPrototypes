@@ -13,21 +13,30 @@ class Bot {
             
             var freq = Math.random() * 10;
             if(freq <= this.hitFreq) {
-                
-                var index = Math.floor(Math.random() * allAds.length);
-                
-                
-                // if(!allAds[index].dead) {
-                //     allAds[index].botHit();
-                    
-                // } else {
+
+                if(isIsolated) {
                     for(var i = 0; i< allAds.length; i++) {
                         if(!allAds[i].dead) {
                             allAds[i].botHit();
                             break;
                         }
                     }
-                // }
+                } else {
+                    var index = Math.floor(Math.random() * allAds.length);
+                
+                
+                    if(!allAds[index].dead && allAds[index].activationTime >= TIMER) {
+                        allAds[index].botHit();
+                        
+                    } else {
+                        for(var i = 0; i< allAds.length; i++) {
+                            if(!allAds[i].dead && allAds[i].activationTime >= TIMER) {
+                                allAds[i].botHit();
+                                break;
+                            }
+                        }
+                    }
+                }
                 
             }
         }

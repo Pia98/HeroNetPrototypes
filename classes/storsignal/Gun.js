@@ -23,20 +23,37 @@ class Gun {
         this.laserBeams.forEach((b, ind) => {
            b.update();
            b.render();
-           userAds.forEach((a, index) => {
-            var collided = false;
-            if(a.dead) { collided = false;}
-            else collided = b.colliding(a);
-            if(collided) {
-                delete this.laserBeams[ind];
-                
-                a.hit();
-                if(a.dead) {
-                    //delete allAds[index];
+           if(isIsolated) {
+            userAds.forEach((a, index) => {
+                var collided = false;
+                if(a.dead) { collided = false;}
+                else collided = b.colliding(a);
+                if(collided) {
+                    delete this.laserBeams[ind];
                     
+                    a.hit();
+                    if(a.dead) {
+                        //delete allAds[index];
+                        
+                    }
                 }
-            }
             })
+           } else {
+            allAds.forEach((a, index) => {
+                var collided = false;
+                if(a.dead || a.activationTime <= TIMER) { collided = false; }
+                else collided = b.colliding(a);
+                if(collided) {
+                    delete this.laserBeams[ind];
+                    
+                    a.hit();
+                    if(a.dead) {
+                        //delete allAds[index];
+                        
+                    }
+                }
+            })
+           }
 
             
             if(b.pos.y < -200) {

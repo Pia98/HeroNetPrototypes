@@ -3,7 +3,7 @@ var step = 0;
 //DO NOT TOUCH -- just needed for computation bc we want to take all the space we have
 const vH = window.innerHeight;
 const vW = window.innerWidth;
-
+const isIsolated = true;
 //GAMEMANGER STUFF
 let shot = false;
 
@@ -146,13 +146,6 @@ function draw() {
   mapImg.resize(vW + 240, 0);
   image(mapImg, 0 - 120, 20);
   
-  if(step == 0) {
-    textFont('Helvetica');
-    textSize(10);
-    textAlign(CENTER, BOTTOM);
-    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
-    text("Mache jetzt mit und zerstöre 5 Ads", vW/2, vH /2 + 80);
-  }
 
   var deadAds = 0;
 
@@ -173,6 +166,14 @@ function draw() {
     shooter.render();
   }
   fakeViewers.update();
+
+  if(step == 0 && deadAds != amountAds) {
+    textFont('Helvetica');
+    textSize(10);
+    textAlign(CENTER, BOTTOM);
+    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
+    text("Mache jetzt mit und zerstöre 5 Ads", vW/2, vH /2 + 80);
+  }
 
   fill('#80F2F2');
   textSize(30);
@@ -198,6 +199,20 @@ function draw() {
     step = 0;
     joinBtnAgain.style('display', 'block');
   }
+
+  if(deadAds == amountAds) {
+     
+    //console.log("Time is up!");
+    textAlign(CENTER, CENTER);
+    textSize(60);
+    textFont('dimensions');
+    fill("#80F2F2");
+    text("Yay!", vW/2, vH/2);
+    text("Ihr habt es geschafft", vW/2, vH/2 + 70);
+    joinBtnAgain.style('display', 'none');
+    joinBtn.style('display', 'none');
+    //noLoop();
+  }
 }
 
 // ----------- Move the Laser Controls --------------
@@ -219,11 +234,8 @@ function stopGame() {
   
   //console.log("Time is up!");
   textAlign(CENTER, CENTER);
-  textSize(70);
+  textSize(60);
   textFont('dimensions');
   fill("#80F2F2");
-  text("Zeit abgelaufen", vW/2, vH/2);
-  textFont('Helvetica');
-  textSize(25);
-  textAlign(LEFT);
+  text("Zeit abgelaufen", vW/2, vH/2 + 140);
 }
