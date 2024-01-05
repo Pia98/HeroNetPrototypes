@@ -419,6 +419,9 @@ function mouseReleased() {
       newY > (-(Math.floor(vH /2) + 21) + 30) &&
       newY < -30 ) {
         finalPos = true;
+    } else {
+      newX = vW/2;
+      newY = 180;
     }
   }
 }
