@@ -10,7 +10,7 @@ let TIMER;
 var fakeViewers;
 var botAmount = 2000;
 var botStickers = [];
-var stickerScale = 0.15;
+var stickerScale = 0.1;
 
 var wallFull = false;
 
@@ -159,7 +159,10 @@ function draw() {
   //3min
   TIMER++;
 
-  fakeViewers.update();
+  if(TIMER >= 210) {
+    fakeViewers.update();
+  }
+  
 
   if(DEBUG) {
     fill('white');
@@ -345,8 +348,8 @@ function loadSelectionScreen() {
       textAlign(CENTER, CENTER);
       textSize(70);
       textFont('dimensions');
-      text("Congrats!", vW/2, vH/4 - 30);
-      text("U did it", vW/2, vH/4 + 30);
+      text("Congrats!", vW/2, vH/4 );
+      text("U did it", vW/2, vH/4 + 55);
       textFont('Helvetica');
       textSize(25);
       textAlign(LEFT);
@@ -580,7 +583,7 @@ function renderProgressBar(){
   //   strokeWeight(0);
   //   text(Math.floor(100 - percentageUntilDone * 100) + "%", -25, -15);
   // } else {
-    var ugfShapePx = Math.PI *35*35 * stickerScale/1.2;
+    var ugfShapePx = Math.PI *35*35 * stickerScale/1.25;
     var pxsPerBot = Math.floor(whitePxs / (botAmount + 1));
     rect(-30, - vH/2 - 21, (Math.floor(vW)) * ((ugfShapePx * botStickers.length) / whitePxs), 20);
     strokeWeight(0);

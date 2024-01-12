@@ -23,7 +23,7 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let defaultTime = 3600;
+let defaultTime = 3150;
 let TIMER;
 var fakeViewers;
 var botAmount = 99;
@@ -56,7 +56,7 @@ function setup() {
   TIMER = defaultTime;
 
   //+1 bc of user
-   maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount/2)) / (amountAds));
+   maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount/1.9)) / (amountAds));
    console.log(maxHealth);
 
 
@@ -164,8 +164,8 @@ function draw() {
     textFont('Helvetica');
     textSize(10);
     textAlign(CENTER, BOTTOM);
-    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
-    text("Mache jetzt mit!", vW/2, vH /2 + 80);
+    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 180);
+    text("Mache jetzt mit!", vW/2, vH /2 + 200);
   }
 
   fill('#80F2F2');

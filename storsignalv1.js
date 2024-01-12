@@ -22,7 +22,7 @@ let pos;
 var oldMousePosX;
 
 //CONFIG
-let defaultTime = 3600;
+let defaultTime = 3150;
 let TIMER;
 var fakeViewers;
 var botAmount = 99;
@@ -58,7 +58,7 @@ function setup() {
   // maxHealth = Math.floor((((defaultTime - 100) / cooldownTimeBots) * (botAmount)) / (amountAds));
   // console.log(maxHealth);
 
-  amountAds = (botAmount + 1) * 5;
+  amountAds = Math.floor((botAmount + 1) * 4.5);
 
  // if(botAmount == 0) {
     maxHealth = 10;
@@ -169,10 +169,10 @@ function draw() {
 
   if(step == 0 && deadAds != amountAds) {
     textFont('Helvetica');
-    textSize(10);
+    textSize(15);
     textAlign(CENTER, BOTTOM);
-    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 70);
-    text("Mache jetzt mit und zerstöre 5 Ads", vW/2, vH /2 + 80);
+    text("Mit dir bekämpfen " + botAmount + " Zuschauer die " + amountAds + " Ads!", vW/2, vH /2 + 180);
+    text("Mache jetzt mit und zerstöre 5 Ads", vW/2, vH /2 + 200);
   }
 
   fill('#80F2F2');
